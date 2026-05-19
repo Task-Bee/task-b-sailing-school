@@ -1,271 +1,171 @@
 {
-  "navigation": {
-    "brandAria": "Task-B Sailing School home",
-    "brandTitle": "Task-B Sailing School",
+  "app": {
+    "brandTitle": "Task-B",
     "brandSubtitle": "Instructional Tool",
-    "links": {
-      "landing": "Home",
-      "tool": "Tool",
-      "modules": "Modules",
-      "about": "About"
-    }
+    "footer": "Prototype v0.2 — visual sailing explanations, no login, no student data.",
+    "unfinishedToast": "This chapter is still being built. For now, start with Points of Sail.",
+    "feedbackToast": "Feedback form is not connected yet. Screenshot the issue and send it to Bart for this test round."
   },
-  "footer": {
-    "note": "Task-B Sailing School prototype v0.1 — student-focused sailing explanations, no login, no personal data."
+  "nav": {
+    "home": "Home",
+    "tool": "Tool"
   },
-  "toast": {
-    "unfinishedModule": "New modules are hoisting their sails! Let’s master the basics first.",
-    "feedbackPlaceholder": "Feedback form coming soon. For now, note what felt unclear and ask your instructor."
+  "home": {
+    "eyebrow": "Public prototype",
+    "title": "Visual sailing lessons that work on your phone.",
+    "lead": "Task-B Sailing School is building a practical, interactive learning tool for students. The first test module is Points of Sail.",
+    "primaryCta": "Open the tool",
+    "secondaryCta": "Start Points of Sail",
+    "cards": [
+      {
+        "title": "Phone-first",
+        "text": "Built for the dock, the cockpit, the train ride and quick recap moments before a lesson."
+      },
+      {
+        "title": "Visual first",
+        "text": "Move the boat, watch the wind angle change and connect the concept to what you feel on deck."
+      },
+      {
+        "title": "Expandable",
+        "text": "More sailing chapters, languages, animations and 3D models can be added after the first module is tested."
+      }
+    ]
   },
-  "modules": {
-    "status": {
-      "active": "Ready",
-      "comingSoon": "Coming soon"
-    }
+  "tool": {
+    "eyebrow": "Instructional tool",
+    "title": "Choose a chapter",
+    "lead": "Only Points of Sail is active in this first public prototype. Other chapters guide you back to the working module.",
+    "activeButton": "Open module",
+    "comingSoon": "Coming soon",
+    "modules": [
+      {
+        "id": "points-of-sail",
+        "title": "Points of Sail",
+        "description": "Wind angle, no-go zone, reaches, dead run and basic sail trim.",
+        "status": "active"
+      },
+      {
+        "id": "sail-trim",
+        "title": "Basic Sail Trim",
+        "description": "Sheeting in, easing out, luffing, tell-tales and first trim checks.",
+        "status": "comingSoon"
+      },
+      {
+        "id": "tacking-gybing",
+        "title": "Tacking & Gybing",
+        "description": "Changing direction through or away from the wind with clear crew communication.",
+        "status": "comingSoon"
+      },
+      {
+        "id": "reefing",
+        "title": "Reefing",
+        "description": "Reducing sail area, crew roles and safe timing decisions.",
+        "status": "comingSoon"
+      },
+      {
+        "id": "harbour",
+        "title": "Harbour Manoeuvres",
+        "description": "Slow-speed control, windage, prop walk and berthing basics.",
+        "status": "comingSoon"
+      },
+      {
+        "id": "anchoring",
+        "title": "Anchoring Basics",
+        "description": "Depth, scope, holding, swing room and simple checks.",
+        "status": "comingSoon"
+      }
+    ]
   },
-  "pages": {
-    "landing": {
-      "eyebrow": "Public prototype",
-      "title": "Learn sailing concepts before you step on deck.",
-      "lead": "A phone-first instructional tool for Task-B Sailing School students. Start with the first finished module: Points of Sail.",
-      "primaryCta": "Open instructional tool",
-      "secondaryCta": "Read disclaimer",
-      "featureCards": [
-        {
-          "title": "Built for phones",
-          "text": "Short explanations, large controls and visual learning panels designed for use before, during and after a sailing course."
-        },
-        {
-          "title": "Student-focused",
-          "text": "The language is practical and generic, with a focus on understanding, confidence and safe seamanship."
-        },
-        {
-          "title": "Expandable structure",
-          "text": "The app keeps lesson text and module metadata separate so more languages and chapters can be added later."
-        }
-      ]
-    },
-    "toolHome": {
-      "eyebrow": "Instructional tool",
-      "title": "Start learning",
-      "lead": "This v0.1 prototype contains one finished interactive module. Other topics will route you back to the basics first.",
-      "continueTitle": "Continue: Points of Sail",
-      "continueText": "Understand where the wind is coming from, how the boat angle changes the point of sail, and why sail trim changes with course.",
-      "continueCta": "Continue module",
-      "libraryTitle": "Module library",
-      "libraryText": "Browse the planned learning structure. Only Points of Sail is active in this first version.",
-      "libraryCta": "View modules"
-    },
-    "modules": {
-      "eyebrow": "Module library",
-      "title": "Sailing modules",
-      "lead": "The first release focuses on the foundation: Points of Sail. New modules will be added after the core interaction is tested."
-    },
-    "comingSoon": {
-      "eyebrow": "Coming soon",
-      "title": "This module is not ready yet.",
-      "text": "You are being redirected to Points of Sail so the learning journey starts with the basics.",
-      "cta": "Go to Points of Sail"
-    },
-    "about": {
-      "eyebrow": "About",
-      "title": "About this prototype",
-      "lead": "This is a public-facing instructional prototype for Task-B Sailing School. It is designed to support, not replace, practical instruction on board.",
-      "cards": [
-        {
-          "title": "Purpose",
-          "text": "The tool explains sailing concepts with simple visuals, plain English and short interactive exercises."
-        },
-        {
-          "title": "Safety disclaimer",
-          "type": "disclaimer",
-          "text": "This app is not a substitute for a qualified instructor, local regulations, weather judgement, boat-specific procedures or safety briefings on board."
-        },
-        {
-          "title": "Privacy",
-          "text": "This v0.1 version has no login, no backend and does not collect student personal data."
-        },
-        {
-          "title": "Branding",
-          "text": "The content uses generic sailing instruction wording and does not use external training-body branding."
-        }
-      ]
-    },
-    "notFound": {
-      "title": "Page not found",
-      "text": "That page is not available in this prototype. Start with the active module.",
-      "cta": "Open Points of Sail"
-    }
+  "about": {
+    "title": "Prototype note",
+    "text": "This tool supports practical sailing instruction. It is not a replacement for onboard safety briefings, local rules, boat-specific procedures, instructor judgement or weather decisions."
   },
   "pointsOfSail": {
-    "eyebrow": "Module 01",
+    "eyebrow": "Module 1",
     "title": "Points of Sail",
-    "learningGoal": "Learning goal: recognise the main sailing angles to the wind, understand the no-go zone, and choose a basic sail trim for each course.",
-    "tocTitle": "In this module",
-    "sections": [
-      {
-        "id": "what-are-points-of-sail",
-        "title": "What are points of sail?",
-        "paragraphs": [
-          "A point of sail describes the angle between the boat’s heading and the direction the wind is coming from.",
-          "The same boat can feel completely different depending on this angle. Upwind sailing needs tighter sails. Downwind sailing needs eased sails."
-        ]
+    "learningGoal": "Understand how wind direction and boat heading determine point of sail and basic sail trim.",
+    "dragHint": "Tap the boat and drag left or right to rotate it.",
+    "windLabel": "Wind",
+    "zoneLabel": "No-go zone",
+    "factsTitle": "Facts",
+    "bridgesTitle": "Donkey bridges",
+    "trimTitle": "Sail trim",
+    "buttonsTitle": "Jump to a point of sail",
+    "feedbackButton": "Feedback",
+    "resetButton": "Reset into wind",
+    "points": {
+      "noGo": {
+        "label": "Into wind / No-go zone",
+        "angle": "0–35°",
+        "trimShort": "No drive — sails luffing",
+        "facts": "The bow is too close to the wind. The sails cannot create useful drive and the boat may slow, stop or drift sideways.",
+        "bridge": "Wind on your nose or both cheeks. A small flag would stream straight back over the deck. If you keep trying to sail here, the boat feels weak and noisy.",
+        "trim": "Do not trim harder to fix this. Bear away first until the sails can fill. Then trim in again for close-hauled or close reach.",
+        "sailAngle": 6,
+        "jibAngle": 5,
+        "heading": 0,
+        "tone": "danger"
       },
-      {
-        "id": "wind-first",
-        "title": "Start with the wind",
-        "paragraphs": [
-          "Before naming the point of sail, first find the wind. Look at flags, ripples, tell-tales, other boats, smoke, waves and what you feel on your face.",
-          "In this prototype the wind is fixed from the top of the screen. Rotate the boat and watch how the point of sail changes."
-        ]
+      "closeHauled": {
+        "label": "Close-hauled",
+        "angle": "35–52°",
+        "trimShort": "Sails in tight",
+        "facts": "This is the closest practical course to the wind. You are sailing upwind, but not directly into it.",
+        "bridge": "Wind on the front cheek. Looking forward, the wind feels forward and slightly to one side. A flag points aft but still pulls strongly from ahead.",
+        "trim": "Mainsail and headsail are trimmed in tight. Keep the sail just full, not luffing. If the inside tell-tales lift or the luff shakes, you may be too high or under-trimmed.",
+        "sailAngle": 14,
+        "jibAngle": 11,
+        "heading": 44,
+        "tone": "upwind"
       },
-      {
-        "id": "trim-basics",
-        "title": "Basic trim idea",
-        "paragraphs": [
-          "As the boat turns away from the wind, sails are usually eased out. As the boat turns toward the wind, sails are usually sheeted in.",
-          "This tool gives a simple first instruction. Real trimming also depends on boat type, wind strength, sea state, sail shape and the lesson goal."
-        ]
+      "closeReach": {
+        "label": "Close reach",
+        "angle": "52–80°",
+        "trimShort": "Eased slightly, still inside the boat’s bounds",
+        "facts": "The boat has turned away from close-hauled. The sails can be eased a little and the boat often feels faster and more comfortable.",
+        "bridge": "Wind still forward, but less on the nose. It feels more like the wind is crossing your forward shoulder than hitting your face directly.",
+        "trim": "Ease the sails slightly, but keep them within the visual bounds of the boat. They should not be dumped out. Trim until the front edge just stops lifting.",
+        "sailAngle": 26,
+        "jibAngle": 22,
+        "heading": 65,
+        "tone": "upwind"
+      },
+      "beamReach": {
+        "label": "Beam reach",
+        "angle": "80–110°",
+        "trimShort": "Sails roughly half out",
+        "facts": "The wind is coming from the side of the boat. This is often one of the easiest and clearest points of sail to feel.",
+        "bridge": "Wind on your ear or directly on the side of your face. A flag would stream sideways across the boat.",
+        "trim": "Sails are about halfway out. If the front of the sail luffs, sheet in a little. If it feels over-tight and stalled, ease a little.",
+        "sailAngle": 45,
+        "jibAngle": 38,
+        "heading": 90,
+        "tone": "reach"
+      },
+      "broadReach": {
+        "label": "Broad reach",
+        "angle": "110–155°",
+        "trimShort": "Well eased — near spreader limit",
+        "facts": "The wind is coming from behind the side of the boat. The boat is moving downwind, but not dead downwind yet.",
+        "bridge": "Wind behind your ear or across the back corner of your neck. A flag streams forward and out to the opposite side.",
+        "trim": "Ease the mainsail until it approaches the spreader/shroud limit. Watch for a horizontal crease or ugly twist as the sail presses against rigging. Do not force it harder into the spreaders.",
+        "sailAngle": 68,
+        "jibAngle": 58,
+        "heading": 132,
+        "tone": "downwind"
+      },
+      "deadRun": {
+        "label": "Dead run",
+        "angle": "155–180°",
+        "trimShort": "Far eased — gybe risk high",
+        "facts": "The wind is almost directly behind the boat. It can feel calm on deck, but the boom can gybe violently if the wind crosses the stern.",
+        "bridge": "Wind behind your head. The boat may feel quieter because you move with the wind. A flag points forward over the bow.",
+        "trim": "Main is far out. Watch the boom, keep people clear, and avoid accidental gybes. Later modules will cover preventers, gybe angles and safer downwind courses.",
+        "sailAngle": 84,
+        "jibAngle": 76,
+        "heading": 180,
+        "tone": "downwind"
       }
-    ],
-    "keyTermsTitle": "Key terms",
-    "keyTerms": [
-      {
-        "term": "No-go zone",
-        "definition": "The area too close to the wind where the sails cannot drive the boat properly."
-      },
-      {
-        "term": "In irons",
-        "definition": "The boat is pointing too close to the wind and may stop or drift backward."
-      },
-      {
-        "term": "Close-hauled",
-        "definition": "Sailing as close to the wind as practical, with sails trimmed in tight."
-      },
-      {
-        "term": "Reach",
-        "definition": "A course across the wind. Reaching is often comfortable and efficient."
-      },
-      {
-        "term": "Run",
-        "definition": "Sailing downwind, with the wind mostly from behind."
-      },
-      {
-        "term": "Sail trim",
-        "definition": "Adjusting the sails in or out to match the course and wind angle."
-      }
-    ],
-    "commonMistakesTitle": "Common beginner mistakes",
-    "commonMistakes": [
-      "Looking only at the boat and forgetting to identify the wind direction first.",
-      "Pulling the sails in tight on every course, even when sailing across or away from the wind.",
-      "Trying to sail directly into the wind and wondering why the boat slows down.",
-      "Changing course without adjusting sail trim.",
-      "Thinking the labels matter more than the feel of the boat, the sail shape and the instructor’s safety instructions."
-    ],
-    "quickCheckTitle": "Quick check",
-    "quickCheckIntro": "Answer these quick questions to check the basic idea. Feedback appears instantly.",
-    "quickCheck": [
-      {
-        "question": "What should you identify before naming the point of sail?",
-        "options": [
-          "The wind direction",
-          "The colour of the tell-tales",
-          "The depth under the keel"
-        ],
-        "correctIndex": 0,
-        "feedbackCorrect": "Correct. The point of sail is based on the boat’s angle to the wind.",
-        "feedbackIncorrect": "Not quite. Start by identifying where the wind is coming from."
-      },
-      {
-        "question": "What usually happens to the sails as you bear away from upwind toward a reach?",
-        "options": [
-          "They are eased out gradually",
-          "They are pulled in tighter and tighter",
-          "They are removed from the mast"
-        ],
-        "correctIndex": 0,
-        "feedbackCorrect": "Correct. As the boat turns away from the wind, the sails are usually eased.",
-        "feedbackIncorrect": "Not quite. Turning away from the wind usually means easing the sails."
-      },
-      {
-        "question": "What happens in the no-go zone?",
-        "options": [
-          "The sails may luff and the boat may lose drive",
-          "The boat reaches maximum speed",
-          "The boat must always gybe"
-        ],
-        "correctIndex": 0,
-        "feedbackCorrect": "Correct. Too close to the wind, the sails cannot drive efficiently.",
-        "feedbackIncorrect": "Not quite. In the no-go zone the sails usually luff and drive is lost."
-      }
-    ],
-    "interactive": {
-      "title": "Interactive wind angle",
-      "helpText": "Rotate the boat. The wind stays fixed from the top.",
-      "diagramAria": "Interactive diagram showing wind direction, boat heading and sail trim",
-      "windLabel": "Wind",
-      "noGoZoneLabel": "No-go zone",
-      "pointOfSailLabel": "Point of sail",
-      "sailTrimLabel": "Basic sail trim",
-      "angleLabel": "Relative wind angle",
-      "sliderLabel": "Boat heading",
-      "sliderAria": "Rotate boat heading",
-      "sliderHelp": "0° points into the wind. 180° points downwind.",
-      "noGoWarning": "Warning: you are too close to the wind. The sails are likely luffing.",
-      "points": {
-        "noGo": {
-          "key": "noGo",
-          "label": "No-go zone / In irons",
-          "trim": "Sails luffing",
-          "sailAngle": 10,
-          "jibAngle": 8
-        },
-        "closeHauled": {
-          "key": "closeHauled",
-          "label": "Close-hauled",
-          "trim": "Sails in tight",
-          "sailAngle": 16,
-          "jibAngle": 13
-        },
-        "closeReach": {
-          "key": "closeReach",
-          "label": "Close reach",
-          "trim": "Ease slightly",
-          "sailAngle": 28,
-          "jibAngle": 24
-        },
-        "beamReach": {
-          "key": "beamReach",
-          "label": "Beam reach",
-          "trim": "Half out",
-          "sailAngle": 46,
-          "jibAngle": 40
-        },
-        "broadReach": {
-          "key": "broadReach",
-          "label": "Broad reach",
-          "trim": "Well eased",
-          "sailAngle": 64,
-          "jibAngle": 58
-        },
-        "run": {
-          "key": "run",
-          "label": "Run / Downwind",
-          "trim": "Eased far out / preventer note later",
-          "sailAngle": 82,
-          "jibAngle": 76
-        }
-      }
-    },
-    "viewer": {
-      "title": "3D Viewer Coming Soon",
-      "aria": "3D viewer placeholder"
-    },
-    "navigation": {
-      "previous": "Previous",
-      "next": "Next module",
-      "feedback": "Feedback"
     }
   }
 }
