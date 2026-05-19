@@ -1,0 +1,14 @@
+Task-B Sailing School v0.1-alpha
+
+How to test locally:
+1. Unzip this folder.
+2. Open Terminal / Command Prompt inside the task-b-sailing-school folder.
+3. Run:
+   python -m http.server
+4. Open:
+   http://localhost:8000
+
+If python does not work, try:
+   python3 -m http.server
+
+Do not test by double-clicking index.html, because the browser may block loading the JSON data files.
