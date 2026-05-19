@@ -5,8 +5,8 @@ const appRoot = document.querySelector("#app");
 const toastElement = document.querySelector("#toast");
 
 const APP_CONFIG = {
-  contentPath: "data/en.json",
-  modulesPath: "data/modules.json",
+  contentPath: "en.json",
+  modulesPath: "modules.json",
   unfinishedModuleDelayMs: 950
 };
 
