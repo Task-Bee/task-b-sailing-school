@@ -151,6 +151,7 @@ h2 { font-size: clamp(1.35rem, 3.2vw, 2.1rem); letter-spacing: -0.03em; }
 h3 { font-size: 1.05rem; }
 p { margin: 0; line-height: 1.55; }
 .lead { margin-top: 1rem; max-width: 650px; color: #42566B; font-size: clamp(1.05rem, 2.2vw, 1.22rem); }
+.lesson-lead { max-width: 650px; }
 .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.4rem; }
 .btn {
   min-height: 48px;
@@ -248,107 +249,102 @@ p { margin: 0; line-height: 1.55; }
   touch-action: none;
 }
 .boat-zone.dragging { cursor: grabbing; }
+
 .boat {
   --heading: 44deg;
-  --main-angle: 14deg;
-  --jib-angle: 11deg;
-  --sail-side: 1;
   position: relative;
-  width: clamp(120px, 24vw, 210px);
-  height: clamp(230px, 42vw, 380px);
+  width: clamp(130px, 24vw, 220px);
+  aspect-ratio: 220 / 360;
   transform: rotate(var(--heading));
   transform-origin: 50% 50%;
   filter: drop-shadow(0 20px 28px rgba(10,37,64,0.18));
-  transition: transform 130ms ease-out;
-  isolation: isolate;
+  transition: transform 90ms linear;
 }
-
-.hull {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 34%;
-  height: 76%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(180deg, white, #DDEAF2);
-  border: 4px solid var(--primary-deep-blue);
-  border-radius: 52% 52% 42% 42% / 14% 14% 62% 62%;
-  z-index: 3;
+.boat-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
 }
-.hull:before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -13%;
-  transform: translateX(-50%);
-  border-left: clamp(22px, 4vw, 36px) solid transparent;
-  border-right: clamp(22px, 4vw, 36px) solid transparent;
-  border-bottom: clamp(44px, 8vw, 72px) solid var(--primary-deep-blue);
+.svg-hull-shadow {
+  fill: rgba(10,37,64,0.16);
+  transform: translate(3px, 5px);
 }
-.cockpit {
-  position: absolute;
-  left: 50%;
-  bottom: 15%;
-  width: 55%;
-  height: 25%;
-  transform: translateX(-50%);
-  background: #C39A62;
-  border-radius: 12px;
-  opacity: 0.9;
-  z-index: 4;
+.svg-hull {
+  fill: #FFFFFF;
+  stroke: var(--primary-deep-blue);
+  stroke-width: 5;
+  stroke-linejoin: round;
 }
-.mast {
-  position: absolute;
-  left: 50%;
-  top: 17%;
-  width: 5px;
-  height: 64%;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: var(--primary-deep-blue);
-  z-index: 9;
+.svg-deck {
+  fill: #E8F1F7;
+  stroke: rgba(10,37,64,0.18);
+  stroke-width: 2;
 }
-.main-sail,
-.jib-sail {
-  position: absolute;
-  left: 50%;
-  transform-origin: 0 50%;
-  transition: transform 130ms ease-out;
-  z-index: 8;
-  pointer-events: none;
+.svg-cabin {
+  fill: #C39A62;
+  stroke: rgba(10,37,64,0.25);
+  stroke-width: 2;
+  opacity: 0.92;
 }
-.main-sail {
-  top: 31%;
-  width: 43%;
-  height: 35%;
-  transform: scaleX(var(--sail-side)) rotate(var(--main-angle));
-  background: rgba(255, 107, 53, 0.34);
-  border: 2px solid rgba(255, 107, 53, 0.62);
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
+.svg-main {
+  fill: rgba(255, 107, 53, 0.34);
+  stroke: rgba(255, 107, 53, 0.72);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  transition: d 90ms linear;
 }
-.jib-sail {
-  top: 18%;
-  width: 34%;
-  height: 27%;
-  transform: scaleX(var(--sail-side)) rotate(var(--jib-angle));
-  background: rgba(0, 119, 182, 0.28);
-  border: 2px solid rgba(0, 119, 182, 0.56);
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
+.svg-jib {
+  fill: rgba(0, 119, 182, 0.28);
+  stroke: rgba(0, 119, 182, 0.66);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  transition: d 90ms linear;
 }
-.sail-crease {
-  position: absolute;
+.svg-mast,
+.svg-forestay {
+  stroke: var(--primary-deep-blue);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.svg-forestay {
+  stroke-width: 3;
+  opacity: 0.72;
+}
+.svg-boom {
+  stroke: var(--primary-deep-blue);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: x2 90ms linear, y2 90ms linear;
+}
+.svg-mast-base {
+  fill: var(--primary-deep-blue);
+}
+.svg-crease {
   display: none;
-  left: 56%;
-  top: 48%;
-  width: 38%;
-  height: 2px;
-  background: rgba(255,107,53,0.8);
-  transform: rotate(8deg);
-  z-index: 10;
-  transform: scaleX(var(--sail-side)) rotate(8deg);
+  stroke: rgba(255,107,53,0.82);
+  stroke-width: 3;
+  stroke-linecap: round;
 }
-.boat.broad .sail-crease { display: block; }
+.boat.broad .svg-crease { display: block; }
 
+.top-control-bar {
+  max-width: 100%;
+  margin: 1rem 0 0.85rem;
+  padding: 0.85rem;
+  border: var(--card-border);
+  border-radius: var(--radius);
+  background: rgba(249, 251, 253, 0.88);
+  box-shadow: var(--card-shadow);
+}
+.toolbar-title {
+  margin-bottom: 0.55rem;
+  color: var(--primary-deep-blue);
+  font-size: 0.82rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .info-clouds {
   position: absolute;
   inset: 0;
@@ -389,6 +385,7 @@ p { margin: 0; line-height: 1.55; }
   cursor: pointer;
 }
 .point-button.active { background: var(--primary-deep-blue); color: white; }
+.point-button.feedback-pill { background: var(--sunset-orange); color: white; }
 .module-grid {
   display: grid;
   gap: 1rem;
@@ -459,7 +456,7 @@ p { margin: 0; line-height: 1.55; }
     max-height: 760px;
     border-radius: 22px;
   }
-  .boat { width: 122px; height: 235px; }
+  .boat { width: 128px; height: auto; }
   .info-clouds {
     position: relative;
     display: grid;
