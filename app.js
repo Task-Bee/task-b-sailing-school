@@ -1,448 +1,265 @@
-const appRoot = document.querySelector('#app');
-const toastElement = document.querySelector('#toast');
-
-let content = null;
-let navOpen = false;
-let heading = 44;
-let activePointKey = 'closeHauled';
-let isDragging = false;
-let lastPointerX = 0;
-let currentSide = 1;
-
-const POINT_ORDER = ['noGo', 'closeHauled', 'closeReach', 'beamReach', 'broadReach', 'deadRun'];
-
-boot();
-
-async function boot() {
-  try {
-    const response = await fetch('en.json', { cache: 'no-store' });
-    if (!response.ok) throw new Error(`Could not load en.json: ${response.status}`);
-    content = await response.json();
-    window.addEventListener('hashchange', renderRoute);
-    renderRoute();
-  } catch (error) {
-    console.error(error);
-    appRoot.innerHTML = `
-      <main class="page">
-        <section class="card" style="margin-top:2rem">
-          <h1>App could not load</h1>
-          <p>The browser could not load <code>en.json</code>. Check that <code>index.html</code>, <code>app.js</code>, <code>styles.css</code> and <code>en.json</code> are all uploaded at the repository root.</p>
-        </section>
-      </main>
-    `;
+const TEXT = {
+  nav: { home: "Home", tool: "Tool" },
+  app: {
+    brandTitle: "Task-B",
+    brandSubtitle: "Instructional Tool",
+    unfinishedToast: "This chapter is still being built. For now, start with Points of Sail.",
+    feedbackToast: "Feedback form is not connected yet. Screenshot the issue and send it to Bart for this test round."
+  },
+  home: {
+    eyebrow: "Public prototype",
+    title: "Visual sailing lessons that work on your phone.",
+    lead: "Task-B Sailing School is building a practical, interactive learning tool for students. The first test module is Points of Sail.",
+    primaryCta: "Open Points of Sail",
+    secondaryCta: "Browse planned chapters"
+  },
+  modules: [
+    { id: "points", title: "Points of Sail", description: "Wind angle, no-go zone, reaches, dead run and basic sail trim.", status: "active" },
+    { id: "trim", title: "Basic Sail Trim", description: "Sheeting in, easing out, luffing, tell-tales and first trim checks.", status: "soon" },
+    { id: "tack", title: "Tacking & Gybing", description: "Changing direction through or away from the wind with clear crew communication.", status: "soon" },
+    { id: "reef", title: "Reefing", description: "Reducing sail area, crew roles and safe timing decisions.", status: "soon" },
+    { id: "harbour", title: "Harbour Manoeuvres", description: "Slow-speed control, windage, prop walk and berthing basics.", status: "soon" },
+    { id: "anchor", title: "Anchoring Basics", description: "Depth, scope, holding, swing room and simple checks.", status: "soon" }
+  ],
+  points: {
+    eyebrow: "Module 1",
+    title: "Points of Sail",
+    goal: "Drag the boat left or right. The wind stays fixed. Watch the point of sail, memory cues and sail trim change.",
+    dragHint: "Tap/hold the boat and drag left or right to rotate it.",
+    buttonsTitle: "Jump to a point of sail",
+    feedbackButton: "Feedback",
+    resetButton: "Reset into wind",
+    factsTitle: "Facts",
+    bridgeTitle: "Memory cues",
+    trimTitle: "Precise sail trim",
+    labels: { name: "Name", angle: "Wind angle", trim: "Basic trim" },
+    list: {
+      noGo: {
+        key: "noGo", label: "Into wind / No-go zone", angle: "0–35°", trimShort: "No drive — sails luffing",
+        facts: "The bow is too close to the wind. The sails cannot create useful drive and the boat may slow, stop or drift sideways.",
+        bridge: "Wind on your nose or both cheeks. A small flag would stream straight back over the deck. If you keep trying to sail here, the boat feels weak and noisy.",
+        trim: "Do not trim harder to fix this. Bear away first until the sails can fill. Then trim in again for close-hauled or close reach.",
+        sailAngle: 6, jibAngle: 5, heading: 0, cls: "danger"
+      },
+      closeHauled: {
+        key: "closeHauled", label: "Close-hauled", angle: "35–52°", trimShort: "Sails in tight",
+        facts: "This is the closest practical course to the wind. You are sailing upwind, but not directly into it.",
+        bridge: "Wind on the front cheek. Looking forward, the wind feels forward and slightly to one side. A flag points aft but still pulls strongly from ahead.",
+        trim: "Mainsail and headsail are trimmed in tight. Keep the sail just full, not luffing. If the luff shakes, you may be too high or under-trimmed.",
+        sailAngle: 14, jibAngle: 11, heading: 44, cls: "upwind"
+      },
+      closeReach: {
+        key: "closeReach", label: "Close reach", angle: "52–80°", trimShort: "Eased slightly, still inside the boat’s bounds",
+        facts: "The boat has turned away from close-hauled. The sails can be eased a little and the boat often feels faster and more comfortable.",
+        bridge: "Wind still forward, but less on the nose. It feels more like the wind is crossing your forward shoulder than hitting your face directly.",
+        trim: "Ease the sails slightly, but keep them within the visual bounds of the boat. Trim until the front edge just stops lifting.",
+        sailAngle: 26, jibAngle: 22, heading: 65, cls: "upwind"
+      },
+      beamReach: {
+        key: "beamReach", label: "Beam reach", angle: "80–110°", trimShort: "Sails roughly half out",
+        facts: "The wind is coming from the side of the boat. This is often one of the easiest and clearest points of sail to feel.",
+        bridge: "Wind on your ear or directly on the side of your face. A flag would stream sideways across the boat.",
+        trim: "Sails are about halfway out. If the front of the sail luffs, sheet in a little. If it feels over-tight and stalled, ease a little.",
+        sailAngle: 45, jibAngle: 38, heading: 90, cls: "reach"
+      },
+      broadReach: {
+        key: "broadReach", label: "Broad reach", angle: "110–155°", trimShort: "Well eased — near spreader limit",
+        facts: "The wind is coming from behind the side of the boat. The boat is moving downwind, but not dead downwind yet.",
+        bridge: "Wind behind your ear or across the back corner of your neck. A flag streams forward and out to the opposite side.",
+        trim: "Ease the mainsail until it approaches the spreader/shroud limit. Watch for a horizontal crease or ugly twist as the sail presses against rigging. Do not force it harder into the spreaders.",
+        sailAngle: 68, jibAngle: 58, heading: 132, cls: "broad"
+      },
+      deadRun: {
+        key: "deadRun", label: "Dead run", angle: "155–180°", trimShort: "Far eased — gybe risk high",
+        facts: "The wind is almost directly behind the boat. It can feel calm on deck, but the boom can gybe violently if the wind crosses the stern.",
+        bridge: "Wind behind your head. The boat may feel quieter because you move with the wind. A flag points forward over the bow.",
+        trim: "Main is far out. Watch the boom, keep people clear, and avoid accidental gybes. Later modules will cover preventers, gybe angles and safer downwind courses.",
+        sailAngle: 84, jibAngle: 76, heading: 180, cls: "downwind"
+      }
+    }
   }
+};
+
+const state = { route: "home", heading: 44, dragging: false, startX: 0, startHeading: 44 };
+const app = document.getElementById("app");
+const toast = document.getElementById("toast");
+
+function icon(type) {
+  if (type === "home") return `<svg class="rail-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5v-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`;
+  return `<svg class="rail-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 4h8l1 3h2v14H5V7h2l1-3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 11h6M9 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
 }
 
-function getRoute() {
-  return (window.location.hash || '#/home').replace('#', '');
-}
-
-function setRoute(route) {
-  window.location.hash = route;
-}
-
-function renderRoute() {
-  const route = getRoute();
-  let pageHtml = '';
-  let active = 'home';
-
-  if (route === '/' || route === '/home') {
-    pageHtml = renderHome();
-    active = 'home';
-  } else if (route === '/tool') {
-    pageHtml = renderTool();
-    active = 'tool';
-  } else if (route === '/points-of-sail') {
-    pageHtml = renderPointsOfSail();
-    active = 'tool';
-  } else if (route === '/about') {
-    pageHtml = renderAbout();
-    active = 'home';
-  } else {
-    showToast(content.app.unfinishedToast);
-    window.setTimeout(() => setRoute('/points-of-sail'), 700);
-    pageHtml = renderTool();
-    active = 'tool';
-  }
-
-  appRoot.innerHTML = `
-    <div class="app-shell">
-      ${renderSideNav(active)}
-      <div class="main-area">${pageHtml}</div>
-    </div>
-  `;
-
-  attachGlobalHandlers();
-  if (route === '/tool') attachToolHandlers();
-  if (route === '/points-of-sail') attachPointsHandlers();
-  window.scrollTo({ top: 0, behavior: 'auto' });
-}
-
-function renderSideNav(active) {
+function layout(inner) {
   return `
-    <aside class="side-nav ${navOpen ? 'nav-open' : ''}" id="sideNav" aria-label="Main navigation">
-      <div class="nav-inner">
-        <button class="nav-brand" id="navToggle" type="button" aria-label="Open navigation">
-          <span class="brand-mark">B</span>
-          <span class="brand-copy">
-            <span class="brand-title">${escapeHtml(content.app.brandTitle)}</span>
-            <span class="brand-subtitle">${escapeHtml(content.app.brandSubtitle)}</span>
-          </span>
-        </button>
-
-        <nav class="nav-links">
-          <a class="nav-link ${active === 'home' ? 'active' : ''}" href="#/home">
-            <span class="nav-icon" aria-hidden="true">${homeIcon()}</span>
-            <span class="nav-label">${escapeHtml(content.nav.home)}</span>
-          </a>
-          <a class="nav-link ${active === 'tool' ? 'active' : ''}" href="#/tool">
-            <span class="nav-icon" aria-hidden="true">${clipboardIcon()}</span>
-            <span class="nav-label">${escapeHtml(content.nav.tool)}</span>
-          </a>
-        </nav>
-
-        <div class="nav-footer nav-label">${escapeHtml(content.app.footer)}</div>
+    <aside id="sideRail" class="side-rail" aria-label="Main navigation">
+      <div class="rail-brand">
+        <div class="brand-mark">B</div>
+        <div class="brand-copy"><span class="brand-title">${TEXT.app.brandTitle}</span><span class="brand-subtitle">${TEXT.app.brandSubtitle}</span></div>
+        <button id="railToggle" class="rail-toggle" type="button" aria-label="Open menu">☰</button>
       </div>
+      <nav class="rail-nav">
+        <button class="rail-link ${state.route === "home" ? "active" : ""}" data-route="home">${icon("home")}<span class="rail-label">${TEXT.nav.home}</span></button>
+        <button class="rail-link ${state.route === "tool" ? "active" : ""}" data-route="tool">${icon("tool")}<span class="rail-label">${TEXT.nav.tool}</span></button>
+      </nav>
     </aside>
-  `;
+    <main class="app-shell">${inner}</main>`;
 }
 
 function renderHome() {
-  const page = content.home;
-  return `
-    <main class="page">
-      <section class="hero">
-        <div class="hero-panel">
-          <div class="hero-content">
-            <span class="eyebrow">${escapeHtml(page.eyebrow)}</span>
-            <h1>${escapeHtml(page.title)}</h1>
-            <p class="lead">${escapeHtml(page.lead)}</p>
-            <div class="action-row">
-              <a class="button button-primary" href="#/tool">${escapeHtml(page.primaryCta)}</a>
-              <a class="button button-secondary" href="#/points-of-sail">${escapeHtml(page.secondaryCta)}</a>
-            </div>
-          </div>
+  return layout(`
+    <section class="page hero">
+      <div>
+        <span class="eyebrow">${TEXT.home.eyebrow}</span>
+        <h1>${TEXT.home.title}</h1>
+        <p class="lead">${TEXT.home.lead}</p>
+        <div class="actions">
+          <button class="btn btn-primary" data-route="tool">${TEXT.home.primaryCta}</button>
+          <button class="btn btn-secondary" data-route="modules">${TEXT.home.secondaryCta}</button>
         </div>
-        <div class="card-grid">
-          ${page.cards.map(card => `
-            <article class="card">
-              <h3>${escapeHtml(card.title)}</h3>
-              <p>${escapeHtml(card.text)}</p>
-            </article>
-          `).join('')}
-        </div>
-      </section>
-    </main>
-  `;
+      </div>
+      ${pointsVisual()}
+    </section>`);
 }
 
 function renderTool() {
-  const page = content.tool;
-  return `
-    <main class="page tool-page">
-      <header class="tool-header">
-        <span class="eyebrow">${escapeHtml(page.eyebrow)}</span>
-        <h1>${escapeHtml(page.title)}</h1>
-        <p class="lead">${escapeHtml(page.lead)}</p>
-      </header>
-      <section class="card-grid" aria-label="Learning chapters">
-        ${page.modules.map(module => renderModuleCard(module)).join('')}
+  return layout(`
+    <section class="page">
+      <span class="eyebrow">${TEXT.points.eyebrow}</span>
+      <h1>${TEXT.points.title}</h1>
+      <p class="lead">${TEXT.points.goal}</p>
+      <div class="actions">
+        <button class="btn btn-secondary" id="resetBtn">${TEXT.points.resetButton}</button>
+        <button class="btn btn-orange" id="feedbackBtn">${TEXT.points.feedbackButton}</button>
+      </div>
+      <div style="height:1rem"></div>
+      ${pointsVisual()}
+      ${pointButtons()}
+      <section class="card about-card">
+        <h2>Prototype note</h2>
+        <p>This tool supports practical sailing instruction. It does not replace onboard safety briefings, local rules, boat-specific procedures, instructor judgement or weather decisions.</p>
       </section>
-    </main>
-  `;
+    </section>`);
 }
 
-function renderModuleCard(module) {
-  const active = module.status === 'active';
-  return `
-    <button class="module-card ${active ? 'active' : 'coming-soon'}" type="button" data-module="${escapeHtml(module.id)}" data-status="${escapeHtml(module.status)}">
-      <span class="status-pill ${active ? '' : 'soon'}">${active ? 'Ready' : escapeHtml(content.tool.comingSoon)}</span>
-      <h2>${escapeHtml(module.title)}</h2>
-      <p>${escapeHtml(module.description)}</p>
-      ${active ? `<span class="button button-primary" style="margin-top:.5rem">${escapeHtml(content.tool.activeButton)}</span>` : ''}
-    </button>
-  `;
+function renderModules() {
+  return layout(`
+    <section class="page">
+      <span class="eyebrow">Planned chapters</span>
+      <h1>Learning structure</h1>
+      <p class="lead">Only Points of Sail is active in this test version. Other chapters return you to the working module.</p>
+      <div class="module-grid">
+        ${TEXT.modules.map(m => `
+          <button class="module-card ${m.status === "soon" ? "soon" : ""}" data-module="${m.id}">
+            <span class="status ${m.status === "soon" ? "soon" : ""}">${m.status === "active" ? "Ready" : "Coming soon"}</span>
+            <h3>${m.title}</h3>
+            <p>${m.description}</p>
+          </button>`).join("")}
+      </div>
+    </section>`);
 }
 
-function renderAbout() {
-  const page = content.about;
+function pointsVisual() {
+  const point = getPoint(state.heading);
+  const signed = signedAngle(state.heading);
+  const sailSide = signed >= 0 ? 1 : -1;
+  const mainAngle = point.sailAngle;
+  const jibAngle = point.jibAngle;
   return `
-    <main class="page tool-page">
-      <section class="card">
-        <span class="eyebrow">About</span>
-        <h1>${escapeHtml(page.title)}</h1>
-        <p class="lead">${escapeHtml(page.text)}</p>
-        <div class="action-row">
-          <a class="button button-primary" href="#/points-of-sail">Open Points of Sail</a>
+    <section class="visual-stage" aria-label="Interactive points of sail diagram">
+      <div class="stage-horizon"></div>
+      <div class="no-go-wedge"></div>
+      <div class="wind-column"><span>Wind</span><span class="wind-arrow">↓</span></div>
+      <div class="no-go-text">No-go zone</div>
+      <div class="degree-label deg-0">0°</div><div class="degree-label deg-90-l">90°</div><div class="degree-label deg-90-r">90°</div><div class="degree-label deg-180">180°</div>
+      <div id="boatZone" class="boat-zone" aria-label="Drag area for rotating the boat">
+        <div id="boat" class="boat ${point.cls}" style="--heading:${state.heading}deg; --sail-side:${sailSide}; --main-angle:${mainAngle}deg; --jib-angle:${jibAngle}deg;">
+          <div class="main-sail"></div><div class="jib-sail"></div><div class="sail-crease"></div><div class="mast"></div><div class="hull"><div class="cockpit"></div></div>
         </div>
-      </section>
-    </main>
-  `;
+      </div>
+      <div class="info-clouds">
+        <article class="info-cloud cloud-facts"><h3>${TEXT.points.factsTitle}</h3><div class="fact-list"><div class="fact-row"><span>${TEXT.points.labels.name}</span><span>${point.label}</span></div><div class="fact-row"><span>${TEXT.points.labels.angle}</span><span>${point.angle}</span></div><div class="fact-row"><span>${TEXT.points.labels.trim}</span><span>${point.trimShort}</span></div></div><p style="margin-top:.7rem">${point.facts}</p></article>
+        <article class="info-cloud cloud-bridge"><h3>${TEXT.points.bridgeTitle}</h3><p>${point.bridge}</p></article>
+        <article class="info-cloud cloud-trim"><h3>${TEXT.points.trimTitle}</h3><p>${point.trim}</p></article>
+      </div>
+    </section>`;
 }
 
-function renderPointsOfSail() {
-  const lesson = content.pointsOfSail;
-  const points = lesson.points;
-  return `
-    <main class="page lesson-page">
-      <section class="lesson-shell">
-        <header class="lesson-titlebar">
-          <div>
-            <span class="eyebrow">${escapeHtml(lesson.eyebrow)}</span>
-            <h1>${escapeHtml(lesson.title)}</h1>
-            <p class="lead">${escapeHtml(lesson.learningGoal)}</p>
-          </div>
-          <a class="button button-secondary" href="#/tool">Back to chapters</a>
-        </header>
-
-        <section class="sail-lab" id="sailLab" aria-label="Interactive points of sail lesson">
-          <div class="scene" id="scene">
-            <div class="no-go-wedge" aria-hidden="true"></div>
-            <div class="no-go-caption">${escapeHtml(lesson.zoneLabel)}</div>
-            <div class="angle-label top">0°</div>
-            <div class="angle-label right">90°</div>
-            <div class="angle-label bottom">180°</div>
-            <div class="angle-label left">90°</div>
-            <div class="wind-axis" aria-hidden="true">
-              <span>${escapeHtml(lesson.windLabel)}</span>
-              <span class="wind-arrow"></span>
-            </div>
-
-            <button class="boat-control" id="boatControl" type="button" aria-label="Drag left or right to rotate the boat">
-              ${boatSvg()}
-            </button>
-          </div>
-
-          <article class="cloud-card cloud-facts" id="factsCard">
-            <h2>${escapeHtml(lesson.factsTitle)} <span class="cloud-pill" id="pointPill">—</span></h2>
-            <div class="facts-grid">
-              <div class="fact-line"><span class="fact-label">Name</span><span class="fact-value point-name" id="pointName">—</span></div>
-              <div class="fact-line"><span class="fact-label">Relative wind</span><span class="fact-value" id="pointAngle">—</span></div>
-              <div class="fact-line"><span class="fact-label">Basic trim</span><span class="fact-value" id="pointTrimShort">—</span></div>
-            </div>
-            <p id="factsText">—</p>
-          </article>
-
-          <article class="cloud-card cloud-bridges">
-            <h2>${escapeHtml(lesson.bridgesTitle)} <span class="cloud-pill">Feel</span></h2>
-            <p id="bridgeText">—</p>
-          </article>
-
-          <article class="cloud-card cloud-trim">
-            <h2>${escapeHtml(lesson.trimTitle)} <span class="cloud-pill">Boat</span></h2>
-            <p id="trimText">—</p>
-          </article>
-
-          <div class="controls-dock">
-            <div class="controls-title-row">
-              <span>${escapeHtml(lesson.dragHint)}</span>
-              <span id="headingOutput">44°</span>
-            </div>
-            <div class="point-buttons" role="group" aria-label="Jump to a point of sail">
-              ${POINT_ORDER.map(key => `
-                <button class="point-button" type="button" data-point-key="${key}">${escapeHtml(points[key].label)}</button>
-              `).join('')}
-            </div>
-            <div class="utility-actions">
-              <button class="button button-secondary" id="resetButton" type="button">${escapeHtml(lesson.resetButton)}</button>
-              <button class="button button-primary" id="feedbackButton" type="button">${escapeHtml(lesson.feedbackButton)}</button>
-            </div>
-          </div>
-        </section>
-      </section>
-    </main>
-  `;
+function pointButtons() {
+  const points = Object.values(TEXT.points.list);
+  return `<section class="card" style="margin-top:1rem"><h2>${TEXT.points.buttonsTitle}</h2><div class="point-buttons">${points.map(p => `<button class="point-button ${getPoint(state.heading).key === p.key ? "active" : ""}" data-heading="${p.heading}">${p.label}</button>`).join("")}</div></section>`;
 }
 
-function attachGlobalHandlers() {
-  const toggle = document.querySelector('#navToggle');
-  const sideNav = document.querySelector('#sideNav');
-  if (!toggle || !sideNav) return;
-
-  toggle.addEventListener('click', () => {
-    navOpen = !navOpen;
-    sideNav.classList.toggle('nav-open', navOpen);
-  });
+function signedAngle(angle) {
+  let n = ((angle % 360) + 360) % 360;
+  if (n > 180) n -= 360;
+  return n;
 }
-
-function attachToolHandlers() {
-  document.querySelectorAll('[data-module]').forEach(button => {
-    button.addEventListener('click', () => {
-      if (button.dataset.status === 'active') {
-        setRoute('/points-of-sail');
-      } else {
-        showToast(content.app.unfinishedToast);
-        window.setTimeout(() => setRoute('/points-of-sail'), 750);
-      }
-    });
-  });
+function getPoint(heading) {
+  const a = Math.abs(signedAngle(heading));
+  const p = TEXT.points.list;
+  if (a < 35) return p.noGo;
+  if (a < 52) return p.closeHauled;
+  if (a < 80) return p.closeReach;
+  if (a < 110) return p.beamReach;
+  if (a < 155) return p.broadReach;
+  return p.deadRun;
 }
-
-function attachPointsHandlers() {
-  const scene = document.querySelector('#scene');
-  const boatControl = document.querySelector('#boatControl');
-  const feedbackButton = document.querySelector('#feedbackButton');
-  const resetButton = document.querySelector('#resetButton');
-
-  const startDrag = event => {
-    isDragging = true;
-    lastPointerX = event.clientX;
-    boatControl.setPointerCapture?.(event.pointerId);
-  };
-
-  const moveDrag = event => {
-    if (!isDragging) return;
-    const deltaX = event.clientX - lastPointerX;
-    lastPointerX = event.clientX;
-    setHeading(heading + deltaX * 0.72);
-  };
-
-  const endDrag = () => {
-    isDragging = false;
-  };
-
-  boatControl.addEventListener('pointerdown', startDrag);
-  boatControl.addEventListener('pointermove', moveDrag);
-  boatControl.addEventListener('pointerup', endDrag);
-  boatControl.addEventListener('pointercancel', endDrag);
-
-  scene.addEventListener('pointerdown', event => {
-    if (event.target.closest('#boatControl')) return;
-    isDragging = true;
-    lastPointerX = event.clientX;
-    scene.setPointerCapture?.(event.pointerId);
-  });
-  scene.addEventListener('pointermove', moveDrag);
-  scene.addEventListener('pointerup', endDrag);
-  scene.addEventListener('pointercancel', endDrag);
-
-  document.querySelectorAll('[data-point-key]').forEach(button => {
-    button.addEventListener('click', () => {
-      const key = button.dataset.pointKey;
-      const point = content.pointsOfSail.points[key];
-      const sign = currentSide || 1;
-      setHeading(point.heading * sign);
-    });
-  });
-
-  resetButton.addEventListener('click', () => setHeading(0));
-  feedbackButton.addEventListener('click', () => showToast(content.app.feedbackToast));
-  setHeading(heading);
-}
-
-function setHeading(value) {
-  heading = normalise360(value);
-  const signed = normaliseSigned(heading);
-  currentSide = signed < 0 ? -1 : 1;
-  const relative = Math.abs(signed);
-  const key = getPointKey(relative);
-  activePointKey = key;
-  const point = content.pointsOfSail.points[key];
-  const side = signed < 0 ? -1 : 1;
-
-  const boat = document.querySelector('#boatControl');
-  const headingOutput = document.querySelector('#headingOutput');
-  const mainSail = document.querySelector('#mainSail');
-  const jibSail = document.querySelector('#jibSail');
-  const boom = document.querySelector('#boom');
-  const crease = document.querySelector('#sailCrease');
-  const luffLines = document.querySelectorAll('.luff-lines');
-  const factsCard = document.querySelector('#factsCard');
-
-  if (!boat) return;
-
-  const sailAngle = side * point.sailAngle;
-  const jibAngle = side * point.jibAngle;
-  boat.style.setProperty('--boat-heading', `${heading}deg`);
-  mainSail?.setAttribute('transform', `rotate(${sailAngle} 0 0)`);
-  jibSail?.setAttribute('transform', `rotate(${jibAngle} 0 -38)`);
-  boom?.setAttribute('transform', `rotate(${sailAngle} 0 0)`);
-
-  const showCrease = key === 'broadReach' || key === 'deadRun';
-  crease?.classList.toggle('visible', showCrease);
-  luffLines.forEach(line => line.classList.toggle('visible', key === 'noGo'));
-
-  headingOutput.textContent = `${Math.round(heading)}° boat heading`;
-  setText('#pointName', point.label);
-  setText('#pointPill', point.angle);
-  setText('#pointAngle', `${Math.round(relative)}° (${point.angle})`);
-  setText('#pointTrimShort', point.trimShort);
-  setText('#factsText', point.facts);
-  setText('#bridgeText', point.bridge);
-  setText('#trimText', point.trim);
-
-  factsCard?.classList.toggle('warning-state', key === 'noGo');
-  document.querySelectorAll('[data-point-key]').forEach(button => {
-    button.classList.toggle('active', button.dataset.pointKey === key);
-  });
-}
-
-function getPointKey(relative) {
-  if (relative < 35) return 'noGo';
-  if (relative < 52) return 'closeHauled';
-  if (relative < 80) return 'closeReach';
-  if (relative < 110) return 'beamReach';
-  if (relative < 155) return 'broadReach';
-  return 'deadRun';
-}
-
-function normalise360(value) {
-  return ((value % 360) + 360) % 360;
-}
-
-function normaliseSigned(value) {
-  const normal = normalise360(value);
-  return normal > 180 ? normal - 360 : normal;
-}
-
-function setText(selector, value) {
-  const element = document.querySelector(selector);
-  if (element) element.textContent = value;
-}
-
 function showToast(message) {
-  toastElement.textContent = message;
-  toastElement.classList.add('visible');
-  window.clearTimeout(showToast.hideTimer);
-  showToast.hideTimer = window.setTimeout(() => toastElement.classList.remove('visible'), 3200);
+  toast.textContent = message;
+  toast.classList.add("visible");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove("visible"), 3000);
 }
-
-function homeIcon() {
-  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path></svg>`;
+function route(to) {
+  state.route = to === "modules" ? "modules" : to === "tool" ? "tool" : "home";
+  render();
 }
-
-function clipboardIcon() {
-  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6l1 2h3v15H5V6h3l1-2Z"></path><path d="M9 10h6"></path><path d="M9 14h6"></path><path d="M9 18h4"></path></svg>`;
+function attachEvents() {
+  document.querySelectorAll("[data-route]").forEach(btn => btn.addEventListener("click", () => route(btn.dataset.route)));
+  const toggle = document.getElementById("railToggle");
+  const rail = document.getElementById("sideRail");
+  if (toggle && rail) toggle.addEventListener("click", () => rail.classList.toggle("is-open"));
+  document.querySelectorAll("[data-module]").forEach(btn => btn.addEventListener("click", () => {
+    if (btn.dataset.module === "points") route("tool");
+    else { showToast(TEXT.app.unfinishedToast); setTimeout(() => route("tool"), 650); }
+  }));
+  document.querySelectorAll("[data-heading]").forEach(btn => btn.addEventListener("click", () => { state.heading = Number(btn.dataset.heading); render(); }));
+  const reset = document.getElementById("resetBtn");
+  if (reset) reset.addEventListener("click", () => { state.heading = 0; render(); });
+  const feedback = document.getElementById("feedbackBtn");
+  if (feedback) feedback.addEventListener("click", () => showToast(TEXT.app.feedbackToast));
+  const zone = document.getElementById("boatZone");
+  if (zone) {
+    zone.addEventListener("pointerdown", e => {
+      state.dragging = true; state.startX = e.clientX; state.startHeading = state.heading;
+      zone.classList.add("dragging"); zone.setPointerCapture(e.pointerId);
+    });
+    zone.addEventListener("pointermove", e => {
+      if (!state.dragging) return;
+      const delta = e.clientX - state.startX;
+      state.heading = Math.round((((state.startHeading + delta * 0.7) % 360) + 360) % 360);
+      updateVisualOnly();
+    });
+    zone.addEventListener("pointerup", e => { state.dragging = false; zone.classList.remove("dragging"); zone.releasePointerCapture(e.pointerId); render(); });
+    zone.addEventListener("pointercancel", () => { state.dragging = false; zone.classList.remove("dragging"); render(); });
+  }
 }
-
-function boatSvg() {
-  return `
-    <svg viewBox="-115 -145 230 290" aria-hidden="true">
-      <g id="jibSail" transform="rotate(11 0 -38)">
-        <path class="jib-sail-shape" d="M 0 -98 C 28 -82 48 -48 53 -4 C 27 -18 9 -30 0 -38 Z"></path>
-      </g>
-      <g id="mainSail" transform="rotate(14 0 0)">
-        <path class="main-sail-shape" d="M 0 -72 C 39 -43 67 14 70 80 C 38 52 16 22 0 0 Z"></path>
-        <path id="sailCrease" class="sail-crease" d="M 19 16 C 36 27 50 43 61 63"></path>
-        <path class="luff-lines" d="M 7 -44 C 18 -29 24 -12 25 2"></path>
-      </g>
-      <path class="hull-shape" d="M 0 -116 C 46 -72 52 70 0 126 C -52 70 -46 -72 0 -116 Z"></path>
-      <path class="deck-shape" d="M 0 -54 C 22 -25 23 45 0 76 C -23 45 -22 -25 0 -54 Z"></path>
-      <path class="spreaders" d="M -42 -16 H 42"></path>
-      <path class="mast-line" d="M 0 -104 V 94"></path>
-      <g id="boom" transform="rotate(14 0 0)">
-        <path class="boom-line" d="M 0 0 L 76 76"></path>
-      </g>
-      <path class="luff-lines" d="M -20 -96 C -26 -69 -26 -40 -19 -10"></path>
-    </svg>
-  `;
+function updateVisualOnly() {
+  const boat = document.getElementById("boat");
+  if (!boat) return;
+  const point = getPoint(state.heading);
+  const signed = signedAngle(state.heading);
+  const sailSide = signed >= 0 ? 1 : -1;
+  boat.className = `boat ${point.cls}`;
+  boat.style.setProperty("--heading", `${state.heading}deg`);
+  boat.style.setProperty("--sail-side", sailSide);
+  boat.style.setProperty("--main-angle", `${point.sailAngle}deg`);
+  boat.style.setProperty("--jib-angle", `${point.jibAngle}deg`);
 }
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+function render() {
+  if (state.route === "tool") app.innerHTML = renderTool();
+  else if (state.route === "modules") app.innerHTML = renderModules();
+  else app.innerHTML = renderHome();
+  attachEvents();
 }
+render();
