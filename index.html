@@ -1,60 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Task-B Sailing School instructional tool for practical sailing concepts." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Task-B Sailing School | Instructional Tool</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <meta name="description" content="Task-B Sailing School instructional tool prototype for visual, student-focused sailing lessons." />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell" id="appShell">
-    <div class="rope-corner rope-corner--tl" aria-hidden="true"></div>
-    <div class="rope-corner rope-corner--tr" aria-hidden="true"></div>
-    <div class="rope-corner rope-corner--bl" aria-hidden="true"></div>
-    <div class="rope-corner rope-corner--br" aria-hidden="true"></div>
+  <noscript>
+    <div class="noscript">This instructional tool needs JavaScript enabled to run the interactive sailing diagrams.</div>
+  </noscript>
 
-    <header class="topbar" aria-label="Task-B Sailing School header">
-      <a class="brand" href="#/points-of-sail" aria-label="Task-B Sailing School home">
-        <span class="brand__mark" aria-hidden="true">
-          <svg viewBox="0 0 64 64" role="img">
-            <path d="M30 7v40H12L30 7Z" />
-            <path d="M34 15v32h18L34 15Z" opacity=".72" />
-            <path d="M9 52h46" class="stroke" />
-          </svg>
-        </span>
-        <span class="brand__text">Task-B Sailing School</span>
-      </a>
-      <button class="icon-button" id="menuButton" type="button" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
-    </header>
-
-    <main id="app" class="app-main" tabindex="-1"></main>
-
-    <nav class="bottom-nav" aria-label="Primary navigation">
-      <a href="#/points-of-sail" data-nav="home" class="bottom-nav__item is-active">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1v-8Z"/></svg>
-        <span>Home</span>
-      </a>
-      <a href="#/lessons" data-nav="lessons" class="bottom-nav__item">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5c2.6 0 4.7.6 7 2v13c-2.3-1.4-4.4-2-7-2V4.5Zm14 0c-2.6 0-4.7.6-7 2v13c2.3-1.4 4.4-2 7-2V4.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
-        <span>Lessons</span>
-      </a>
-      <a href="#/progress" data-nav="progress" class="bottom-nav__item">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m12 12 4-5-2 6-6 4 4-5Z"/></svg>
-        <span>Progress</span>
-      </a>
-      <a href="#/alerts" data-nav="alerts" class="bottom-nav__item">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16v-5.2a6 6 0 0 0-12 0V16l-2 2h16l-2-2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        <span>Alerts</span>
-      </a>
-    </nav>
+  <div id="app" class="app-root">
+    <main class="loading-screen">
+      <div class="loading-mark">⛵</div>
+      <p>Loading Task-B Instructional Tool...</p>
+    </main>
   </div>
 
-  <script src="data/lesson-content.js"></script>
-  <script src="js/points-of-sail.js"></script>
-  <script src="js/router.js"></script>
-  <script src="js/app.js"></script>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>
