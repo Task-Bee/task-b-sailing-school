@@ -1,1 +1,448 @@
-const state={heading:45,dragging:false,center:{x:500,y:365}};const POINTS=[{key:"intoWind",label:"INTO WIND",sub:"sails lose drive",min:0,max:44.999,trim:"Sails luff. You are too close to the wind for normal sailing.",memory:"Wind is on your nose. The boat feels like it wants to stop.",buttonHeading:0},{key:"closeHauled",label:"CLOSE-HAULED",sub:"as close to the wind as practical",min:45,max:52,trim:"Sails in tight. Boom close to the centreline, genoa sheeted in.",memory:"Wind feels forward on your cheek. You are climbing upwind, not pointing straight into it.",buttonHeading:45},{key:"closeReach",label:"CLOSE REACH",sub:"wind forward of the beam",min:52.001,max:75,trim:"Ease slightly. Sails sit just inside the boat’s side/beam.",memory:"Wind is still forward, but less aggressive. Think fast and controlled.",buttonHeading:60},{key:"beamReach",label:"BEAM REACH",sub:"wind across the side",min:75.001,max:112,trim:"Sails roughly half out. This is often easy to feel and efficient.",memory:"Wind is on the side of your face or shoulder. The boat feels balanced.",buttonHeading:90},{key:"broadReach",label:"BROAD REACH",sub:"wind from behind the beam",min:112.001,max:160,trim:"Sails well eased. Mainsail approaches the side limit; keep control before gybing.",memory:"Wind comes from behind your ear/quarter. Comfortable, but watch the boom.",buttonHeading:135},{key:"deadRun",label:"DEAD RUN",sub:"wind from directly behind",min:160.001,max:180,trim:"Sails far out. Use a preventer later in real training when appropriate.",memory:"Wind is on the back of your neck. The boom can cross dangerously in an accidental gybe.",buttonHeading:180}];const elements={};document.addEventListener("DOMContentLoaded",()=>{cacheElements();drawCompassTicks();drawNoGoWedge();bindControls();updateAll(45);showToast("Drag the boat or choose a point of sail above the model.")});function cacheElements(){elements.stage=document.querySelector("#simStage");elements.svg=document.querySelector("#sailingSvg");elements.boatGroup=document.querySelector("#boatGroup");elements.mainSail=document.querySelector("#mainSail");elements.genoaSail=document.querySelector("#genoaSail");elements.tickMarks=document.querySelector("#tickMarks");elements.noGoWedge=document.querySelector("#noGoWedge");elements.buttons=[...document.querySelectorAll(".pos-button[data-heading]")];elements.factPoint=document.querySelector("#factPoint");elements.factAngle=document.querySelector("#factAngle");elements.factTack=document.querySelector("#factTack");elements.memoryText=document.querySelector("#memoryText");elements.trimText=document.querySelector("#trimText");elements.posLabel=document.querySelector("#posLabel");elements.posSubLabel=document.querySelector("#posSubLabel");elements.toast=document.querySelector("#toast");elements.feedbackButton=document.querySelector("#feedbackButton");elements.feedbackNav=document.querySelector("#feedbackNav");elements.helpButton=document.querySelector("#helpButton")}function bindControls(){elements.buttons.forEach(button=>{button.addEventListener("click",()=>{updateAll(Number(button.dataset.heading))})});elements.stage.addEventListener("pointerdown",event=>{state.dragging=true;elements.stage.setPointerCapture(event.pointerId);updateFromPointer(event)});elements.stage.addEventListener("pointermove",event=>{if(!state.dragging)return;updateFromPointer(event)});elements.stage.addEventListener("pointerup",()=>{state.dragging=false});elements.stage.addEventListener("pointercancel",()=>{state.dragging=false});const feedback=()=>showToast("Feedback form coming soon. Send comments to Bart for this test round.");elements.feedbackButton.addEventListener("click",feedback);elements.feedbackNav.addEventListener("click",feedback);elements.helpButton.addEventListener("click",()=>{showToast("Wind comes from the top. Drag the boat, then read the facts, memory bridge, and sail trim boxes.")})}function updateFromPointer(event){const point=svgPoint(event.clientX,event.clientY);const dx=point.x-state.center.x;const dy=point.y-state.center.y;let heading=Math.atan2(dx,-dy)*180/Math.PI;heading=((heading%360)+360)%360;if(heading>354||heading<6)heading=0;if(heading>174&&heading<186)heading=180;updateAll(heading)}function svgPoint(clientX,clientY){const pt=elements.svg.createSVGPoint();pt.x=clientX;pt.y=clientY;return pt.matrixTransform(elements.svg.getScreenCTM().inverse())}function updateAll(heading){state.heading=heading;const signed=normalizeSigned(heading);const relative=Math.abs(signed);const point=getPoint(relative);const tack=getTack(signed,relative);elements.boatGroup.setAttribute("transform",`translate(500 365) rotate(${heading})`);updateSails(signed,relative,point);updateText(point,relative,tack);updateButtons(point)}function updateText(point,relative,tack){elements.factPoint.textContent=titleCase(point.label);elements.factAngle.textContent=point.key==="intoWind"?"0–45°":point.key==="deadRun"?"160–180°":`about ${Math.round(relative)}°`;elements.factTack.textContent=tack;elements.memoryText.textContent=point.memory;elements.trimText.textContent=point.trim;elements.posLabel.textContent=point.label;elements.posSubLabel.textContent=point.sub}function updateButtons(point){elements.buttons.forEach(button=>{const target=Number(button.dataset.heading);const buttonPoint=getPoint(Math.abs(normalizeSigned(target)));button.classList.toggle("active",buttonPoint.key===point.key)})}function getPoint(relative){return POINTS.find(point=>relative>=point.min&&relative<=point.max)||POINTS[POINTS.length-1]}function getTack(signed,relative){if(relative<45)return"No tack / in irons";if(relative>175)return"Downwind";return signed>=0?"Starboard tack":"Port tack"}function updateSails(signed,relative,point){const side=signed>=0?-1:1;const sailSettings={intoWind:{main:6,genoa:6,mainLen:124,genoaLen:132,opacity:.45},closeHauled:{main:13,genoa:11,mainLen:144,genoaLen:150,opacity:.72},closeReach:{main:25,genoa:23,mainLen:150,genoaLen:156,opacity:.76},beamReach:{main:45,genoa:42,mainLen:156,genoaLen:162,opacity:.78},broadReach:{main:68,genoa:62,mainLen:160,genoaLen:166,opacity:.80},deadRun:{main:86,genoa:-70,mainLen:158,genoaLen:150,opacity:.78}}[point.key];const mastX=0,mastY=18;const forestayTop={x:0,y:-148};const forestayBase={x:0,y:-48};let mainSide=side,genoaSide=side;if(point.key==="deadRun"){mainSide=signed>=0?-1:1;genoaSide=-mainSide}const main=makeMainSail(mastX,mastY,mainSide*sailSettings.main,sailSettings.mainLen);const genoa=makeGenoa(forestayTop,forestayBase,genoaSide*sailSettings.genoa,sailSettings.genoaLen);elements.mainSail.setAttribute("d",main);elements.genoaSail.setAttribute("d",genoa);elements.mainSail.style.opacity=sailSettings.opacity;elements.genoaSail.style.opacity=sailSettings.opacity}function makeMainSail(pivotX,pivotY,angleDeg,length){const rad=(angleDeg-90)*Math.PI/180;const clew={x:pivotX+Math.cos(rad)*length,y:pivotY+Math.sin(rad)*length};const head={x:pivotX,y:-48};const tack={x:pivotX,y:pivotY};return`M ${head.x} ${head.y} L ${tack.x} ${tack.y} L ${clew.x.toFixed(2)} ${clew.y.toFixed(2)} Z`}function makeGenoa(forestayTop,forestayBase,angleDeg,length){const midY=(forestayTop.y+forestayBase.y)/2;const rad=(angleDeg-90)*Math.PI/180;const clew={x:forestayBase.x+Math.cos(rad)*length,y:midY+Math.sin(rad)*length};return`M ${forestayTop.x} ${forestayTop.y} L ${forestayBase.x} ${forestayBase.y} L ${clew.x.toFixed(2)} ${clew.y.toFixed(2)} Z`}function normalizeSigned(angle){let normal=((angle%360)+360)%360;if(normal>180)normal-=360;return normal}function titleCase(value){return value.toLowerCase().replace(/[a-z]/g,letter=>letter.toUpperCase())}function showToast(message){elements.toast.textContent=message;elements.toast.classList.add("visible");window.clearTimeout(showToast.timer);showToast.timer=window.setTimeout(()=>{elements.toast.classList.remove("visible")},3600)}function drawCompassTicks(){const frag=document.createDocumentFragment();for(let i=0;i<72;i++){const angle=i*5;const major=i%6===0;const inner=major?186:198;const outer=216;const a=(angle-90)*Math.PI/180;const x1=Math.cos(a)*inner;const y1=Math.sin(a)*inner;const x2=Math.cos(a)*outer;const y2=Math.sin(a)*outer;const line=document.createElementNS("http://www.w3.org/2000/svg","line");line.setAttribute("x1",x1.toFixed(2));line.setAttribute("y1",y1.toFixed(2));line.setAttribute("x2",x2.toFixed(2));line.setAttribute("y2",y2.toFixed(2));line.setAttribute("stroke","rgba(64,42,22,.44)");line.setAttribute("stroke-width",major?"4":"2");line.setAttribute("stroke-linecap","round");frag.appendChild(line)}elements.tickMarks.appendChild(frag)}function drawNoGoWedge(){const cx=500,cy=365,r=420;const p1=polar(cx,cy,r,-45);const p2=polar(cx,cy,r,45);const d=`M ${cx} ${cy} L ${p1.x} ${p1.y} A ${r} ${r} 0 0 1 ${p2.x} ${p2.y} Z`;elements.noGoWedge.setAttribute("d",d)}function polar(cx,cy,r,angleDegFromTop){const rad=(angleDegFromTop-90)*Math.PI/180;return{x:(cx+Math.cos(rad)*r).toFixed(2),y:(cy+Math.sin(rad)*r).toFixed(2)}}
+const appRoot = document.querySelector('#app');
+const toastElement = document.querySelector('#toast');
+
+let content = null;
+let navOpen = false;
+let heading = 44;
+let activePointKey = 'closeHauled';
+let isDragging = false;
+let lastPointerX = 0;
+let currentSide = 1;
+
+const POINT_ORDER = ['noGo', 'closeHauled', 'closeReach', 'beamReach', 'broadReach', 'deadRun'];
+
+boot();
+
+async function boot() {
+  try {
+    const response = await fetch('en.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Could not load en.json: ${response.status}`);
+    content = await response.json();
+    window.addEventListener('hashchange', renderRoute);
+    renderRoute();
+  } catch (error) {
+    console.error(error);
+    appRoot.innerHTML = `
+      <main class="page">
+        <section class="card" style="margin-top:2rem">
+          <h1>App could not load</h1>
+          <p>The browser could not load <code>en.json</code>. Check that <code>index.html</code>, <code>app.js</code>, <code>styles.css</code> and <code>en.json</code> are all uploaded at the repository root.</p>
+        </section>
+      </main>
+    `;
+  }
+}
+
+function getRoute() {
+  return (window.location.hash || '#/home').replace('#', '');
+}
+
+function setRoute(route) {
+  window.location.hash = route;
+}
+
+function renderRoute() {
+  const route = getRoute();
+  let pageHtml = '';
+  let active = 'home';
+
+  if (route === '/' || route === '/home') {
+    pageHtml = renderHome();
+    active = 'home';
+  } else if (route === '/tool') {
+    pageHtml = renderTool();
+    active = 'tool';
+  } else if (route === '/points-of-sail') {
+    pageHtml = renderPointsOfSail();
+    active = 'tool';
+  } else if (route === '/about') {
+    pageHtml = renderAbout();
+    active = 'home';
+  } else {
+    showToast(content.app.unfinishedToast);
+    window.setTimeout(() => setRoute('/points-of-sail'), 700);
+    pageHtml = renderTool();
+    active = 'tool';
+  }
+
+  appRoot.innerHTML = `
+    <div class="app-shell">
+      ${renderSideNav(active)}
+      <div class="main-area">${pageHtml}</div>
+    </div>
+  `;
+
+  attachGlobalHandlers();
+  if (route === '/tool') attachToolHandlers();
+  if (route === '/points-of-sail') attachPointsHandlers();
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function renderSideNav(active) {
+  return `
+    <aside class="side-nav ${navOpen ? 'nav-open' : ''}" id="sideNav" aria-label="Main navigation">
+      <div class="nav-inner">
+        <button class="nav-brand" id="navToggle" type="button" aria-label="Open navigation">
+          <span class="brand-mark">B</span>
+          <span class="brand-copy">
+            <span class="brand-title">${escapeHtml(content.app.brandTitle)}</span>
+            <span class="brand-subtitle">${escapeHtml(content.app.brandSubtitle)}</span>
+          </span>
+        </button>
+
+        <nav class="nav-links">
+          <a class="nav-link ${active === 'home' ? 'active' : ''}" href="#/home">
+            <span class="nav-icon" aria-hidden="true">${homeIcon()}</span>
+            <span class="nav-label">${escapeHtml(content.nav.home)}</span>
+          </a>
+          <a class="nav-link ${active === 'tool' ? 'active' : ''}" href="#/tool">
+            <span class="nav-icon" aria-hidden="true">${clipboardIcon()}</span>
+            <span class="nav-label">${escapeHtml(content.nav.tool)}</span>
+          </a>
+        </nav>
+
+        <div class="nav-footer nav-label">${escapeHtml(content.app.footer)}</div>
+      </div>
+    </aside>
+  `;
+}
+
+function renderHome() {
+  const page = content.home;
+  return `
+    <main class="page">
+      <section class="hero">
+        <div class="hero-panel">
+          <div class="hero-content">
+            <span class="eyebrow">${escapeHtml(page.eyebrow)}</span>
+            <h1>${escapeHtml(page.title)}</h1>
+            <p class="lead">${escapeHtml(page.lead)}</p>
+            <div class="action-row">
+              <a class="button button-primary" href="#/tool">${escapeHtml(page.primaryCta)}</a>
+              <a class="button button-secondary" href="#/points-of-sail">${escapeHtml(page.secondaryCta)}</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-grid">
+          ${page.cards.map(card => `
+            <article class="card">
+              <h3>${escapeHtml(card.title)}</h3>
+              <p>${escapeHtml(card.text)}</p>
+            </article>
+          `).join('')}
+        </div>
+      </section>
+    </main>
+  `;
+}
+
+function renderTool() {
+  const page = content.tool;
+  return `
+    <main class="page tool-page">
+      <header class="tool-header">
+        <span class="eyebrow">${escapeHtml(page.eyebrow)}</span>
+        <h1>${escapeHtml(page.title)}</h1>
+        <p class="lead">${escapeHtml(page.lead)}</p>
+      </header>
+      <section class="card-grid" aria-label="Learning chapters">
+        ${page.modules.map(module => renderModuleCard(module)).join('')}
+      </section>
+    </main>
+  `;
+}
+
+function renderModuleCard(module) {
+  const active = module.status === 'active';
+  return `
+    <button class="module-card ${active ? 'active' : 'coming-soon'}" type="button" data-module="${escapeHtml(module.id)}" data-status="${escapeHtml(module.status)}">
+      <span class="status-pill ${active ? '' : 'soon'}">${active ? 'Ready' : escapeHtml(content.tool.comingSoon)}</span>
+      <h2>${escapeHtml(module.title)}</h2>
+      <p>${escapeHtml(module.description)}</p>
+      ${active ? `<span class="button button-primary" style="margin-top:.5rem">${escapeHtml(content.tool.activeButton)}</span>` : ''}
+    </button>
+  `;
+}
+
+function renderAbout() {
+  const page = content.about;
+  return `
+    <main class="page tool-page">
+      <section class="card">
+        <span class="eyebrow">About</span>
+        <h1>${escapeHtml(page.title)}</h1>
+        <p class="lead">${escapeHtml(page.text)}</p>
+        <div class="action-row">
+          <a class="button button-primary" href="#/points-of-sail">Open Points of Sail</a>
+        </div>
+      </section>
+    </main>
+  `;
+}
+
+function renderPointsOfSail() {
+  const lesson = content.pointsOfSail;
+  const points = lesson.points;
+  return `
+    <main class="page lesson-page">
+      <section class="lesson-shell">
+        <header class="lesson-titlebar">
+          <div>
+            <span class="eyebrow">${escapeHtml(lesson.eyebrow)}</span>
+            <h1>${escapeHtml(lesson.title)}</h1>
+            <p class="lead">${escapeHtml(lesson.learningGoal)}</p>
+          </div>
+          <a class="button button-secondary" href="#/tool">Back to chapters</a>
+        </header>
+
+        <section class="sail-lab" id="sailLab" aria-label="Interactive points of sail lesson">
+          <div class="scene" id="scene">
+            <div class="no-go-wedge" aria-hidden="true"></div>
+            <div class="no-go-caption">${escapeHtml(lesson.zoneLabel)}</div>
+            <div class="angle-label top">0°</div>
+            <div class="angle-label right">90°</div>
+            <div class="angle-label bottom">180°</div>
+            <div class="angle-label left">90°</div>
+            <div class="wind-axis" aria-hidden="true">
+              <span>${escapeHtml(lesson.windLabel)}</span>
+              <span class="wind-arrow"></span>
+            </div>
+
+            <button class="boat-control" id="boatControl" type="button" aria-label="Drag left or right to rotate the boat">
+              ${boatSvg()}
+            </button>
+          </div>
+
+          <article class="cloud-card cloud-facts" id="factsCard">
+            <h2>${escapeHtml(lesson.factsTitle)} <span class="cloud-pill" id="pointPill">—</span></h2>
+            <div class="facts-grid">
+              <div class="fact-line"><span class="fact-label">Name</span><span class="fact-value point-name" id="pointName">—</span></div>
+              <div class="fact-line"><span class="fact-label">Relative wind</span><span class="fact-value" id="pointAngle">—</span></div>
+              <div class="fact-line"><span class="fact-label">Basic trim</span><span class="fact-value" id="pointTrimShort">—</span></div>
+            </div>
+            <p id="factsText">—</p>
+          </article>
+
+          <article class="cloud-card cloud-bridges">
+            <h2>${escapeHtml(lesson.bridgesTitle)} <span class="cloud-pill">Feel</span></h2>
+            <p id="bridgeText">—</p>
+          </article>
+
+          <article class="cloud-card cloud-trim">
+            <h2>${escapeHtml(lesson.trimTitle)} <span class="cloud-pill">Boat</span></h2>
+            <p id="trimText">—</p>
+          </article>
+
+          <div class="controls-dock">
+            <div class="controls-title-row">
+              <span>${escapeHtml(lesson.dragHint)}</span>
+              <span id="headingOutput">44°</span>
+            </div>
+            <div class="point-buttons" role="group" aria-label="Jump to a point of sail">
+              ${POINT_ORDER.map(key => `
+                <button class="point-button" type="button" data-point-key="${key}">${escapeHtml(points[key].label)}</button>
+              `).join('')}
+            </div>
+            <div class="utility-actions">
+              <button class="button button-secondary" id="resetButton" type="button">${escapeHtml(lesson.resetButton)}</button>
+              <button class="button button-primary" id="feedbackButton" type="button">${escapeHtml(lesson.feedbackButton)}</button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  `;
+}
+
+function attachGlobalHandlers() {
+  const toggle = document.querySelector('#navToggle');
+  const sideNav = document.querySelector('#sideNav');
+  if (!toggle || !sideNav) return;
+
+  toggle.addEventListener('click', () => {
+    navOpen = !navOpen;
+    sideNav.classList.toggle('nav-open', navOpen);
+  });
+}
+
+function attachToolHandlers() {
+  document.querySelectorAll('[data-module]').forEach(button => {
+    button.addEventListener('click', () => {
+      if (button.dataset.status === 'active') {
+        setRoute('/points-of-sail');
+      } else {
+        showToast(content.app.unfinishedToast);
+        window.setTimeout(() => setRoute('/points-of-sail'), 750);
+      }
+    });
+  });
+}
+
+function attachPointsHandlers() {
+  const scene = document.querySelector('#scene');
+  const boatControl = document.querySelector('#boatControl');
+  const feedbackButton = document.querySelector('#feedbackButton');
+  const resetButton = document.querySelector('#resetButton');
+
+  const startDrag = event => {
+    isDragging = true;
+    lastPointerX = event.clientX;
+    boatControl.setPointerCapture?.(event.pointerId);
+  };
+
+  const moveDrag = event => {
+    if (!isDragging) return;
+    const deltaX = event.clientX - lastPointerX;
+    lastPointerX = event.clientX;
+    setHeading(heading + deltaX * 0.72);
+  };
+
+  const endDrag = () => {
+    isDragging = false;
+  };
+
+  boatControl.addEventListener('pointerdown', startDrag);
+  boatControl.addEventListener('pointermove', moveDrag);
+  boatControl.addEventListener('pointerup', endDrag);
+  boatControl.addEventListener('pointercancel', endDrag);
+
+  scene.addEventListener('pointerdown', event => {
+    if (event.target.closest('#boatControl')) return;
+    isDragging = true;
+    lastPointerX = event.clientX;
+    scene.setPointerCapture?.(event.pointerId);
+  });
+  scene.addEventListener('pointermove', moveDrag);
+  scene.addEventListener('pointerup', endDrag);
+  scene.addEventListener('pointercancel', endDrag);
+
+  document.querySelectorAll('[data-point-key]').forEach(button => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.pointKey;
+      const point = content.pointsOfSail.points[key];
+      const sign = currentSide || 1;
+      setHeading(point.heading * sign);
+    });
+  });
+
+  resetButton.addEventListener('click', () => setHeading(0));
+  feedbackButton.addEventListener('click', () => showToast(content.app.feedbackToast));
+  setHeading(heading);
+}
+
+function setHeading(value) {
+  heading = normalise360(value);
+  const signed = normaliseSigned(heading);
+  currentSide = signed < 0 ? -1 : 1;
+  const relative = Math.abs(signed);
+  const key = getPointKey(relative);
+  activePointKey = key;
+  const point = content.pointsOfSail.points[key];
+  const side = signed < 0 ? -1 : 1;
+
+  const boat = document.querySelector('#boatControl');
+  const headingOutput = document.querySelector('#headingOutput');
+  const mainSail = document.querySelector('#mainSail');
+  const jibSail = document.querySelector('#jibSail');
+  const boom = document.querySelector('#boom');
+  const crease = document.querySelector('#sailCrease');
+  const luffLines = document.querySelectorAll('.luff-lines');
+  const factsCard = document.querySelector('#factsCard');
+
+  if (!boat) return;
+
+  const sailAngle = side * point.sailAngle;
+  const jibAngle = side * point.jibAngle;
+  boat.style.setProperty('--boat-heading', `${heading}deg`);
+  mainSail?.setAttribute('transform', `rotate(${sailAngle} 0 0)`);
+  jibSail?.setAttribute('transform', `rotate(${jibAngle} 0 -38)`);
+  boom?.setAttribute('transform', `rotate(${sailAngle} 0 0)`);
+
+  const showCrease = key === 'broadReach' || key === 'deadRun';
+  crease?.classList.toggle('visible', showCrease);
+  luffLines.forEach(line => line.classList.toggle('visible', key === 'noGo'));
+
+  headingOutput.textContent = `${Math.round(heading)}° boat heading`;
+  setText('#pointName', point.label);
+  setText('#pointPill', point.angle);
+  setText('#pointAngle', `${Math.round(relative)}° (${point.angle})`);
+  setText('#pointTrimShort', point.trimShort);
+  setText('#factsText', point.facts);
+  setText('#bridgeText', point.bridge);
+  setText('#trimText', point.trim);
+
+  factsCard?.classList.toggle('warning-state', key === 'noGo');
+  document.querySelectorAll('[data-point-key]').forEach(button => {
+    button.classList.toggle('active', button.dataset.pointKey === key);
+  });
+}
+
+function getPointKey(relative) {
+  if (relative < 35) return 'noGo';
+  if (relative < 52) return 'closeHauled';
+  if (relative < 80) return 'closeReach';
+  if (relative < 110) return 'beamReach';
+  if (relative < 155) return 'broadReach';
+  return 'deadRun';
+}
+
+function normalise360(value) {
+  return ((value % 360) + 360) % 360;
+}
+
+function normaliseSigned(value) {
+  const normal = normalise360(value);
+  return normal > 180 ? normal - 360 : normal;
+}
+
+function setText(selector, value) {
+  const element = document.querySelector(selector);
+  if (element) element.textContent = value;
+}
+
+function showToast(message) {
+  toastElement.textContent = message;
+  toastElement.classList.add('visible');
+  window.clearTimeout(showToast.hideTimer);
+  showToast.hideTimer = window.setTimeout(() => toastElement.classList.remove('visible'), 3200);
+}
+
+function homeIcon() {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path></svg>`;
+}
+
+function clipboardIcon() {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6l1 2h3v15H5V6h3l1-2Z"></path><path d="M9 10h6"></path><path d="M9 14h6"></path><path d="M9 18h4"></path></svg>`;
+}
+
+function boatSvg() {
+  return `
+    <svg viewBox="-115 -145 230 290" aria-hidden="true">
+      <g id="jibSail" transform="rotate(11 0 -38)">
+        <path class="jib-sail-shape" d="M 0 -98 C 28 -82 48 -48 53 -4 C 27 -18 9 -30 0 -38 Z"></path>
+      </g>
+      <g id="mainSail" transform="rotate(14 0 0)">
+        <path class="main-sail-shape" d="M 0 -72 C 39 -43 67 14 70 80 C 38 52 16 22 0 0 Z"></path>
+        <path id="sailCrease" class="sail-crease" d="M 19 16 C 36 27 50 43 61 63"></path>
+        <path class="luff-lines" d="M 7 -44 C 18 -29 24 -12 25 2"></path>
+      </g>
+      <path class="hull-shape" d="M 0 -116 C 46 -72 52 70 0 126 C -52 70 -46 -72 0 -116 Z"></path>
+      <path class="deck-shape" d="M 0 -54 C 22 -25 23 45 0 76 C -23 45 -22 -25 0 -54 Z"></path>
+      <path class="spreaders" d="M -42 -16 H 42"></path>
+      <path class="mast-line" d="M 0 -104 V 94"></path>
+      <g id="boom" transform="rotate(14 0 0)">
+        <path class="boom-line" d="M 0 0 L 76 76"></path>
+      </g>
+      <path class="luff-lines" d="M -20 -96 C -26 -69 -26 -40 -19 -10"></path>
+    </svg>
+  `;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
