@@ -3,18 +3,125 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Task-B Sailing School | Points of Sail</title>
-  <meta name="description" content="Task-B Sailing School prototype: a visual, phone-first Points of Sail learning tool." />
-  <link rel="stylesheet" href="styles.css?v=0.2.3" />
+  <title>Task-B Instructional Tool | Points of Sail</title>
+  <meta name="description" content="Task-B Instructional Tool prototype: an interactive Points of Sail learning module." />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <noscript>
-    <div class="noscript">This tool needs JavaScript enabled for the interactive sailing diagram.</div>
-  </noscript>
+  <div class="app-shell">
+    <aside class="side-rail" aria-label="Primary navigation">
+      <a class="rail-brand" href="#home" aria-label="Task-B home"><span class="rail-icon">⛵</span><span class="rail-label">Task-B</span></a>
+      <nav class="rail-nav">
+        <a class="rail-link active" href="#home"><span class="rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5h-5.2v-6.2H8.7V21H3.5a.5.5 0 0 1-.5-.5v-9.7Z"/></svg></span><span class="rail-label">Home</span></a>
+        <a class="rail-link" href="#tool"><span class="rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v16.5a.5.5 0 0 1-.77.42L15.5 19.2l-2.73 1.72a.5.5 0 0 1-.54 0L9.5 19.2l-2.73 1.72A.5.5 0 0 1 6 20.5V4a1 1 0 0 1 1-1Zm3 4h6v1.7H9V7Zm0 4h6v1.7H9V11Z"/></svg></span><span class="rail-label">Tool</span></a>
+        <button id="feedbackNav" class="rail-link rail-button" type="button"><span class="rail-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9.5L5.2 20.2A.7.7 0 0 1 4 19.7V5a1 1 0 0 1 1-1Zm4 4v2h8V8H8Zm0 4v2h5v-2H8Z"/></svg></span><span class="rail-label">Feedback</span></button>
+      </nav>
+    </aside>
 
-  <div id="app"></div>
+    <main class="main-content" id="home">
+      <header class="top-header">
+        <button class="mobile-menu-button" type="button" aria-label="Navigation menu">☰</button>
+        <div class="top-title">Task-B Instructional Tool</div>
+        <button id="helpButton" class="help-button" type="button" aria-label="Help">?</button>
+      </header>
+
+      <section class="module-hero" id="tool">
+        <div class="module-title-block">
+          <p class="eyebrow">Module 1</p>
+          <h1>Points of Sail</h1>
+          <p class="learning-goal">Understand how wind direction and boat heading determine your point of sail and basic sail trim.</p>
+        </div>
+
+        <div class="control-strip" aria-label="Point of sail controls">
+          <button class="pos-button" data-heading="0" type="button">Into wind</button>
+          <button class="pos-button active" data-heading="45" type="button">Close-hauled</button>
+          <button class="pos-button" data-heading="60" type="button">Close reach</button>
+          <button class="pos-button" data-heading="90" type="button">Beam reach</button>
+          <button class="pos-button" data-heading="135" type="button">Broad reach</button>
+          <button class="pos-button" data-heading="180" type="button">Dead run</button>
+          <button id="feedbackButton" class="pos-button feedback-button" type="button">Feedback</button>
+        </div>
+
+        <section class="sim-card" aria-label="Interactive points of sail simulator">
+          <div class="sim-stage" id="simStage">
+            <svg id="sailingSvg" class="sailing-svg" viewBox="0 0 1000 720" role="img" aria-labelledby="diagramTitle diagramDesc">
+              <title id="diagramTitle">Interactive Points of Sail Diagram</title>
+              <desc id="diagramDesc">A top-down sailboat on a compass with fixed wind from top to bottom. Drag the boat or use the buttons.</desc>
+
+              <defs>
+                <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#0A2540" flood-opacity="0.18"/></filter>
+                <linearGradient id="waterGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#D7EEF8"/><stop offset="58%" stop-color="#C8E7F2"/><stop offset="100%" stop-color="#B7DFEB"/></linearGradient>
+                <radialGradient id="compassGradient" cx="50%" cy="50%" r="62%"><stop offset="0%" stop-color="#D2B082" stop-opacity="0.68"/><stop offset="75%" stop-color="#A87942" stop-opacity="0.72"/><stop offset="100%" stop-color="#765127" stop-opacity="0.88"/></radialGradient>
+                <linearGradient id="hullGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="60%" stop-color="#EDF4F8"/><stop offset="100%" stop-color="#D6E2E8"/></linearGradient>
+                <linearGradient id="woodGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#D7B27A"/><stop offset="100%" stop-color="#9E7042"/></linearGradient>
+              </defs>
+
+              <rect x="0" y="0" width="1000" height="720" rx="18" fill="url(#waterGradient)" />
+              <path id="noGoWedge" d="" fill="#D9383A" opacity="0.30"></path>
+
+              <g class="wind-symbol" transform="translate(500,78)">
+                <path d="M-73 4c-21 0-38 13-42 31h-5c-24 0-44 18-44 41s20 41 44 41H78c31 0 56-23 56-51S109 15 78 15c-8 0-16 2-23 5C42 7 24 0 4 0c-29 0-54 17-65 41-3-1-8-1-12-1Z" transform="scale(.38) translate(0,-45)" fill="#F4F8FA" stroke="#0A2540" stroke-width="4" opacity="0.92"/>
+                <path d="M0 10 v106" stroke="#0A2540" stroke-width="8" stroke-linecap="round" opacity="0.55"/>
+                <path d="M-34 98 L0 148 L34 98 Z" fill="#4A90E2" stroke="#0A2540" stroke-width="4" opacity="0.95"/>
+                <rect x="-22" y="22" width="44" height="84" fill="#EDF4F8" stroke="#0A2540" stroke-width="3" opacity="0.86"/>
+                <text x="0" y="85" text-anchor="middle" transform="rotate(-90 0 85)" class="wind-text">WIND</text>
+              </g>
+
+              <g class="compass-layer" transform="translate(500,365)">
+                <circle r="225" fill="url(#compassGradient)" filter="url(#softShadow)" />
+                <circle r="114" fill="rgba(247,245,240,.38)" stroke="rgba(255,255,255,.72)" stroke-width="4" />
+                <circle r="224" fill="none" stroke="rgba(10,37,64,.24)" stroke-width="4" />
+                <g id="tickMarks"></g>
+                <path d="M-225 0 H225" stroke="#F6F2EB" stroke-width="4" opacity=".68"/>
+                <path d="M0 -225 V225" stroke="#F6F2EB" stroke-width="4" opacity=".42"/>
+              </g>
+
+              <g class="arc-layer" transform="translate(500,365)">
+                <path d="M-286,120 A310,310 0 0,1 -278,-126" fill="none" stroke="#0077B6" stroke-width="16" opacity="0.72"/>
+                <path d="M278,-126 A310,310 0 0,1 286,120" fill="none" stroke="#0077B6" stroke-width="16" opacity="0.72"/>
+              </g>
+
+              <g id="boatGroup" class="boat-group" transform="translate(500 365) rotate(45)">
+                <g id="sailGroup" class="sail-group">
+                  <path id="genoaSail" d="" fill="rgba(0,119,182,0.55)" stroke="#0A2540" stroke-width="3" stroke-linejoin="round"/>
+                  <path id="mainSail" d="" fill="rgba(255,107,53,0.66)" stroke="#0A2540" stroke-width="3" stroke-linejoin="round"/>
+                </g>
+                <g id="hullGroup" class="hull-group" filter="url(#softShadow)">
+                  <path class="hull-outline" d="M0,-170 C54,-139 79,-73 80,0 C79,85 45,148 0,174 C-45,148 -79,85 -80,0 C-79,-73 -54,-139 0,-170 Z" fill="url(#hullGradient)" stroke="#0A2540" stroke-width="5" stroke-linejoin="round"/>
+                  <path d="M0,-150 C38,-116 55,-61 56,-1 C55,62 31,118 0,146 C-31,118 -55,62 -56,-1 C-55,-61 -38,-116 0,-150 Z" fill="#FFFFFF" opacity="0.56"/>
+                  <path class="deck" d="M-38,18 C-31,-30 -18,-70 0,-104 C18,-70 31,-30 38,18 L35,118 C20,133 -20,133 -35,118 Z" fill="url(#woodGradient)" stroke="#0A2540" stroke-width="3" opacity="0.88"/>
+                  <path d="M-28,27 L28,27 M-31,51 L31,51 M-31,75 L31,75 M-28,99 L28,99" stroke="#5F3D20" stroke-width="2" opacity="0.5"/>
+                </g>
+                <g class="rigging-fixed">
+                  <line x1="0" y1="-48" x2="0" y2="92" stroke="#0A2540" stroke-width="7" stroke-linecap="round"/>
+                  <circle cx="0" cy="-48" r="7" fill="#0A2540"/>
+                  <circle cx="0" cy="18" r="6" fill="#0A2540"/>
+                  <line x1="0" y1="-48" x2="0" y2="-154" stroke="#0A2540" stroke-width="3" opacity=".56"/>
+                </g>
+              </g>
+
+              <g class="labels-layer">
+                <text id="posLabel" x="90" y="144" class="point-label">CLOSE-HAULED</text>
+                <text id="posSubLabel" x="90" y="182" class="point-sublabel">as close to the wind as practical</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="info-clouds">
+            <article class="info-cloud"><h2>Facts</h2><dl><div><dt>Point of sail</dt><dd id="factPoint">Close-hauled</dd></div><div><dt>Relative wind</dt><dd id="factAngle">about 45°</dd></div><div><dt>Tack</dt><dd id="factTack">Starboard tack</dd></div></dl></article>
+            <article class="info-cloud"><h2>Memory bridge</h2><p id="memoryText">Wind feels forward on your cheek. The boat climbs upwind, but not straight into it.</p></article>
+            <article class="info-cloud"><h2>Sail trim</h2><p id="trimText">Sails in tight. The boom stays close to the centreline and the genoa is pulled in.</p></article>
+          </div>
+        </section>
+
+        <section class="lesson-text">
+          <div class="text-card"><h2>How to use this model</h2><p>The wind is fixed from the top. Drag the boat left or right, or choose a point of sail above the model. The compass and sails update to show how the boat sits relative to the wind.</p></div>
+          <div class="text-card warning-card"><h2>No-go zone</h2><p>The red zone is the area too close to the wind. In this zone the sails lose drive and the boat may slow, stop, or drift backwards.</p></div>
+        </section>
+      </section>
+    </main>
+  </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
-  <script src="app.js?v=0.2.3"></script>
+  <script src="app.js"></script>
 </body>
 </html>
