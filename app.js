@@ -81,8 +81,6 @@ const ZONES = [
 
 const CENTER = { x: 500, y: 420 };
 const SECTOR_RADIUS = 302;
-const COMPASS_RADIUS = 260;
-
 let continuousHeading = 38;
 let dragging = false;
 
@@ -93,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
   drawTicks();
   drawSectors();
   bind();
-  update(38, true);
+  update(38);
 });
 
 function cache() {
@@ -125,11 +123,10 @@ function bind() {
   els.buttons.forEach(button => {
     button.addEventListener("click", () => {
       const target = Number(button.dataset.target);
-      // Keep button jumps to the current side except into-wind/dead-run.
       const signed = normalizeSigned(continuousHeading);
       const side = signed < 0 ? -1 : 1;
       const correctedTarget = target === 0 || target === 180 ? target : target * side;
-      update(correctedTarget, true);
+      update(correctedTarget);
     });
   });
 
@@ -177,28 +174,34 @@ function updateFromPointer(event) {
   if (delta > 180) delta -= 360;
   if (delta < -180) delta += 360;
 
-  update(continuousHeading + delta, false);
+  update(continuousHeading + delta);
 }
 
-function update(value, snap) {
+function update(value) {
   continuousHeading = value;
   const visualHeading = normalize360(continuousHeading);
   const signed = normalizeSigned(continuousHeading);
   const relative = Math.abs(signed);
+  const side = getSide(signed, relative);
   const zone = getZone(relative);
 
   els.boatGroup.setAttribute("transform", `translate(500 420) rotate(${visualHeading})`);
 
   updateSails(zone, signed, relative);
   updateText(zone, relative, signed);
-  updateActiveSectors(zone);
+  updateActiveSectors(zone, side, relative);
   updateButtons(zone);
 }
 
-function updateSails(zone, signed, relative) {
-  // Corrected side: positive heading = wind from port, sails to starboard/local right.
-  let side = signed >= 0 ? 1 : -1;
+function getSide(signed, relative) {
+  if (relative < 0.5 || relative > 179.5) return "center";
+  return signed >= 0 ? "positive" : "negative";
+}
 
+function updateSails(zone, signed, relative) {
+  // Corrected: sails extend aft/downwind relative to the boat, not forward.
+  // Positive heading gives sails to local starboard/right; negative heading local port/left.
+  let side = signed >= 0 ? 1 : -1;
   if (relative < 2) side = 1;
 
   let mainSide = side;
@@ -209,11 +212,8 @@ function updateSails(zone, signed, relative) {
     genoaSide = -side;
   }
 
-  const mainPath = createMainSail(mainSide * zone.main);
-  const genoaPath = createGenoa(genoaSide * zone.genoa);
-
-  els.mainSail.setAttribute("d", mainPath);
-  els.genoaSail.setAttribute("d", genoaPath);
+  els.mainSail.setAttribute("d", createMainSail(mainSide * zone.main));
+  els.genoaSail.setAttribute("d", createGenoa(genoaSide * zone.genoa));
 }
 
 function createMainSail(angle) {
@@ -221,7 +221,7 @@ function createMainSail(angle) {
   const tack = { x: 0, y: 12 };
   const boomLength = 126;
 
-  const rad = (angle - 90) * Math.PI / 180;
+  const rad = (90 - angle) * Math.PI / 180;
   const clew = {
     x: tack.x + Math.cos(rad) * boomLength,
     y: tack.y + Math.sin(rad) * boomLength
@@ -235,10 +235,10 @@ function createGenoa(angle) {
   const tack = { x: 0, y: -46 };
   const sheetLength = 138;
 
-  const rad = (angle - 90) * Math.PI / 180;
+  const rad = (90 - angle) * Math.PI / 180;
   const clew = {
     x: tack.x + Math.cos(rad) * sheetLength,
-    y: -82 + Math.sin(rad) * sheetLength
+    y: -72 + Math.sin(rad) * sheetLength
   };
 
   return `M ${head.x} ${head.y} L ${tack.x} ${tack.y} L ${clew.x.toFixed(1)} ${clew.y.toFixed(1)} Z`;
@@ -254,7 +254,6 @@ function updateText(zone, relative, signed) {
   } else if (relative > 170) {
     els.factTack.textContent = "Dead downwind";
   } else {
-    // Heading clockwise from wind means wind on port side.
     els.factTack.textContent = signed >= 0 ? "Port tack" : "Starboard tack";
   }
 
@@ -262,9 +261,11 @@ function updateText(zone, relative, signed) {
   els.trimText.textContent = zone.futureTrim;
 }
 
-function updateActiveSectors(zone) {
+function updateActiveSectors(zone, side, relative) {
   document.querySelectorAll(".sector").forEach(sector => {
-    sector.classList.toggle("active", sector.dataset.zone === zone.key);
+    const sameZone = sector.dataset.zone === zone.key;
+    const sameSide = sector.dataset.side === side || side === "center" || sector.dataset.side === "center";
+    sector.classList.toggle("active", sameZone && sameSide);
   });
 }
 
@@ -282,12 +283,12 @@ function getZone(relative) {
 
 function drawSectors() {
   const ranges = [
-    { key: "noGo", color: "#D9383A", ranges: [[-30, 30]], noGo: true },
-    { key: "closeHauled", color: "#FF8A35", ranges: [[30, 45], [-45, -30]] },
-    { key: "closeReach", color: "#F2C94C", ranges: [[45, 70], [-70, -45]] },
-    { key: "beamReach", color: "#2EB872", ranges: [[70, 110], [-110, -70]] },
-    { key: "broadReach", color: "#2F80ED", ranges: [[110, 150], [-150, -110]] },
-    { key: "deadRun", color: "#8E44AD", ranges: [[150, 180], [-180, -150]] }
+    { key: "noGo", color: "#D9383A", ranges: [[-30, 0, "negative"], [0, 30, "positive"]], noGo: true },
+    { key: "closeHauled", color: "#FF8A35", ranges: [[30, 45, "positive"], [-45, -30, "negative"]] },
+    { key: "closeReach", color: "#F2C94C", ranges: [[45, 70, "positive"], [-70, -45, "negative"]] },
+    { key: "beamReach", color: "#2EB872", ranges: [[70, 110, "positive"], [-110, -70, "negative"]] },
+    { key: "broadReach", color: "#2F80ED", ranges: [[110, 150, "positive"], [-150, -110, "negative"]] },
+    { key: "deadRun", color: "#8E44AD", ranges: [[150, 180, "positive"], [-180, -150, "negative"]] }
   ];
 
   ranges.forEach(item => {
@@ -295,6 +296,7 @@ function drawSectors() {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("class", `sector ${item.noGo ? "no-go" : ""}`);
       path.setAttribute("data-zone", item.key);
+      path.setAttribute("data-side", range[2]);
       path.setAttribute("fill", item.color);
       path.setAttribute("d", sectorPath(range[0], range[1], SECTOR_RADIUS));
       els.sectorLayer.appendChild(path);
