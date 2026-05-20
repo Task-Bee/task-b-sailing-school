@@ -59,8 +59,8 @@ const ZONES = [
     max: 150,
     target: 150,
     color: "#2F80ED",
-    memory: "Wind from behind your ear. Comfortable, but the boom becomes more important.",
-    futureTrim: "Ease mainsail until the spreader creates a horizontal crease. Genoa loose, but not overtaking the imaginary line in front of the boat.",
+    memory: "Wind behind your ear. Comfortable, but watch the boom.",
+    futureTrim: "Main well eased to spreader limit. Genoa loose, but not passing forward of the boat.",
     main: 70,
     genoa: 62
   },
@@ -72,8 +72,8 @@ const ZONES = [
     max: 180,
     target: 180,
     color: "#8E44AD",
-    memory: "Wind behind your head. Quiet feeling, but accidental gybe risk increases.",
-    futureTrim: "Both sails trimmed as broad reach but on both sides of the mast: Butterfly / Milkmaid / Wings.",
+    memory: "Wind behind your head. Quiet feeling, but gybe risk increases.",
+    futureTrim: "Broad-reach trim on both sides of the mast: Butterfly / Milkmaid / Wings.",
     main: 86,
     genoa: 76
   }
