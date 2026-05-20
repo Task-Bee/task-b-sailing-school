@@ -248,7 +248,7 @@ function updateText(zone, relative, signed) {
   els.factAngle.textContent = zone.angle;
 
   if (relative < 30) {
-    els.factTack.textContent = "No tack / into wind";
+    els.factTack.textContent = "No tack";
   } else if (relative > 170) {
     els.factTack.textContent = "Dead downwind";
   } else {
