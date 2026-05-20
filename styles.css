@@ -138,15 +138,15 @@ h2 { font-size: 1.18rem; }
   align-items: baseline;
   flex-wrap: wrap;
   gap: .45rem;
-  margin: .1rem 0 .85rem;
+  margin: .1rem 0 .6rem;
   font-weight: 950;
   letter-spacing: -.02em;
 }
 
 .subject-name {
   color: var(--sunset);
-  font-size: clamp(1.05rem, 3.8vw, 1.45rem);
-  letter-spacing: .08em;
+  font-size: clamp(1.28rem, 4.8vw, 1.65rem);
+  letter-spacing: .04em;
 }
 
 .subject-separator {
@@ -156,7 +156,7 @@ h2 { font-size: 1.18rem; }
 
 .subject-current {
   color: var(--marine);
-  font-size: clamp(1.22rem, 4.5vw, 1.9rem);
+  font-size: clamp(1.28rem, 4.8vw, 1.65rem);
 }
 
 .lead {
@@ -179,16 +179,14 @@ h2 { font-size: 1.18rem; }
 }
 
 .control-bar {
-  position: sticky;
-  top: 0;
   z-index: 10;
   display: flex;
   gap: .55rem;
   align-items: center;
+  justify-content: center;
   overflow-x: auto;
-  padding: .8rem;
+  padding: .72rem .8rem;
   background: rgba(255,255,255,.86);
-  border-bottom: var(--border);
   backdrop-filter: blur(16px);
 }
 
@@ -305,25 +303,20 @@ svg {
 }
 
 .info-grid {
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 8;
+  position: static;
   display: grid;
-  grid-template-columns: .9fr 1fr 1fr;
-  gap: .8rem;
-  pointer-events: none;
+  grid-template-columns: .8fr 1fr 1fr;
+  gap: .75rem;
+  padding: .85rem;
+  background: #fff;
 }
 
 .info-card {
-  padding: 1rem;
+  padding: .9rem 1rem;
   border: var(--border);
   border-radius: 28px;
-  background: rgba(255,255,255,.78);
+  background: rgba(255,255,255,.92);
   box-shadow: var(--small-shadow);
-  backdrop-filter: blur(14px);
-  pointer-events: auto;
 }
 .info-card p {
   margin: 0;
@@ -459,14 +452,18 @@ svg {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: .42rem;
     overflow-x: visible;
-    padding: .55rem;
+    padding: .5rem;
   }
 
   .point-button {
-    min-height: 36px;
-    padding: 0 .55rem;
-    font-size: .74rem;
+    min-height: 34px;
+    padding: 0 .45rem;
+    font-size: .68rem;
     white-space: nowrap;
+  }
+
+  .control-bar-bottom {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .point-button.feedback {
@@ -503,4 +500,35 @@ svg {
     min-height: 400px;
   }
   #svgPointName { font-size: 28px; }
+}
+
+
+.control-bar-top {
+  border-bottom: var(--border);
+}
+
+.control-bar-bottom {
+  border-top: var(--border);
+  border-bottom: var(--border);
+}
+
+@media (max-width: 760px) {
+  .subject-title {
+    gap: .32rem;
+    margin-bottom: .55rem;
+  }
+
+  .subject-name,
+  .subject-current {
+    font-size: 1.28rem;
+    line-height: 1.1;
+  }
+
+  .subject-name {
+    letter-spacing: .035em;
+  }
+
+  .subject-separator {
+    font-size: 1.1rem;
+  }
 }
