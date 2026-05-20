@@ -1139,3 +1139,159 @@ svg {
     grid-template-columns: 26px 1fr;
   }
 }
+
+
+/* v0.6.9: remove remaining page scroll and stabilise cards */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  overscroll-behavior: none;
+}
+
+.app-shell {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+@media (min-width: 761px) {
+  .content {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .tool-card {
+    height: auto;
+    overflow: hidden;
+  }
+
+  .info-card.facts {
+    left: 1rem;
+    top: 19%;
+    width: min(24%, 255px);
+    min-height: 118px;
+  }
+
+  .info-card:nth-child(2) {
+    left: 1rem;
+    top: auto;
+    bottom: 1rem;
+    width: min(24%, 255px);
+    min-height: 98px;
+  }
+
+  .info-card:nth-child(3) {
+    right: 1rem;
+    top: 19%;
+    width: min(21%, 245px);
+    min-height: 104px;
+  }
+
+  .info-card:nth-child(2) p,
+  .info-card:nth-child(3) p {
+    height: 3.45em;
+    min-height: 3.45em;
+    max-height: 3.45em;
+    line-height: 1.15;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+}
+
+@media (max-width: 760px) {
+  html,
+  body {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .mobile-header {
+    flex: 0 0 58px;
+  }
+
+  .content {
+    height: calc(100dvh - 58px);
+    max-height: calc(100dvh - 58px);
+    overflow: hidden;
+  }
+
+  .tool-card {
+    overflow: hidden;
+  }
+
+  .simulator {
+    overflow: hidden;
+  }
+
+  .info-card.facts {
+    left: .22rem;
+    top: 10%;
+    width: 34%;
+    max-width: 136px;
+    min-height: 64px;
+    height: auto;
+    transform: none;
+  }
+
+  .info-card:nth-child(2) {
+    left: .22rem;
+    top: auto;
+    bottom: 12%;
+    width: 34%;
+    max-width: 136px;
+    min-height: 50px;
+    height: auto;
+    transform: none;
+  }
+
+  .info-card:nth-child(3) {
+    right: .22rem;
+    top: 10%;
+    width: 29%;
+    max-width: 122px;
+    min-height: 62px;
+    height: auto;
+    transform: none;
+  }
+
+  .info-card p {
+    min-height: 0 !important;
+    max-height: none;
+  }
+
+  .info-card:nth-child(2) p {
+    -webkit-line-clamp: 3;
+  }
+
+  .info-card:nth-child(3) p {
+    -webkit-line-clamp: 4;
+  }
+}
+
+@media (max-width: 420px) {
+  .info-card.facts {
+    top: 10%;
+    min-height: 60px;
+  }
+
+  .info-card:nth-child(2) {
+    bottom: 13%;
+    min-height: 48px;
+  }
+
+  .info-card:nth-child(3) {
+    top: 10%;
+    min-height: 58px;
+  }
+}
