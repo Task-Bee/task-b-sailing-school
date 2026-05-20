@@ -7,16 +7,8 @@ const ZONES = [
     max: 30,
     target: 0,
     color: "#D9383A",
-    memoryLines: [
-      "<strong>Sail</strong> flaps like a flag",
-      "<strong>Wind</strong> on the front of your face/nose",
-      "You are pointing too close toward the wind"
-    ],
-    trimLines: [
-      "<strong>Main</strong> no useful drive; do not sheet harder",
-      "<strong>Genoa</strong> flapping/flagging, no clean flow",
-      "<strong>Action</strong> bear away until the bow leaves red"
-    ],
+    memory: "Wind on your nose. This is not a normal sailing angle.",
+    futureTrim: "Do not fix this by pulling harder. Bear away until the bow leaves the red sector.",
     main: 4,
     genoa: 3
   },
@@ -28,16 +20,8 @@ const ZONES = [
     max: 45,
     target: 38,
     color: "#FF8A35",
-    memoryLines: [
-      "<strong>Sail</strong> tight and drawing",
-      "<strong>Wind</strong> on cheek/nose-forward",
-      "You are sailing as high upwind as practical"
-    ],
-    trimLines: [
-      "<strong>Main</strong> as tight as can be",
-      "<strong>Genoa</strong> inside bounds of the boat",
-      "<strong>Trim</strong> on telltales"
-    ],
+    memory: "Wind forward on your cheek. You are climbing upwind, not aiming straight into it.",
+    futureTrim: "Sails as tight as possible. Genoa stays within the bounds of the boat.",
     main: 12,
     genoa: 9
   },
@@ -49,16 +33,8 @@ const ZONES = [
     max: 70,
     target: 45,
     color: "#F2C94C",
-    memoryLines: [
-      "<strong>Sail</strong> still fairly tight",
-      "<strong>Wind</strong> forward of your shoulder",
-      "You have borne away from close-hauled"
-    ],
-    trimLines: [
-      "<strong>Main</strong> kept near the middle",
-      "<strong>Genoa</strong> trimmed on telltales",
-      "<strong>Watch</strong> smooth flow, not flapping"
-    ],
+    memory: "Wind still forward, but less aggressive. Think forward shoulder rather than nose.",
+    futureTrim: "Main stays in the middle. Genoa is trimmed by telltales.",
     main: 20,
     genoa: 22
   },
@@ -70,16 +46,8 @@ const ZONES = [
     max: 110,
     target: 90,
     color: "#2EB872",
-    memoryLines: [
-      "<strong>Sail</strong> eased to the side",
-      "<strong>Wind</strong> on your ear/shoulder",
-      "You are sailing across the wind"
-    ],
-    trimLines: [
-      "<strong>Main</strong> tip of boom just outside hull",
-      "<strong>Genoa</strong> trimmed on telltales",
-      "<strong>Balance</strong> often easiest to feel here"
-    ],
+    memory: "Wind on your ear or shoulder. A clear, balanced point of sail.",
+    futureTrim: "Boom tip on the side of the hull. Genoa trim by telltales.",
     main: 44,
     genoa: 42
   },
@@ -91,16 +59,8 @@ const ZONES = [
     max: 150,
     target: 150,
     color: "#2F80ED",
-    memoryLines: [
-      "<strong>Sail</strong> well eased",
-      "<strong>Wind</strong> behind your ear",
-      "You are sailing away from the wind"
-    ],
-    trimLines: [
-      "<strong>Main</strong> ease until spreader crease",
-      "<strong>Genoa</strong> loose, not past imaginary bow line",
-      "<strong>Watch</strong> for parachute effect"
-    ],
+    memory: "Wind behind your ear. Comfortable, but watch the boom.",
+    futureTrim: "Main well eased to spreader limit. Genoa loose, but not passing forward of the boat.",
     main: 70,
     genoa: 62
   },
@@ -112,16 +72,8 @@ const ZONES = [
     max: 180,
     target: 180,
     color: "#8E44AD",
-    memoryLines: [
-      "<strong>Sail</strong> can sit wing-on-wing",
-      "<strong>Wind</strong> on the back of your head",
-      "You are sailing directly downwind"
-    ],
-    trimLines: [
-      "<strong>Main</strong> broad-reach trim, one side",
-      "<strong>Genoa</strong> broad-reach trim, other side",
-      "<strong>Names</strong> Butterfly / Milkmaid / Wings"
-    ],
+    memory: "Wind behind your head. Quiet feeling, but gybe risk increases.",
+    futureTrim: "Broad-reach trim on both sides of the mast: Butterfly / Milkmaid / Wings.",
     main: 86,
     genoa: 76
   }
@@ -303,8 +255,8 @@ function updateText(zone, relative, signed) {
     els.factTack.textContent = signed >= 0 ? "Port tack" : "Starboard tack";
   }
 
-  els.memoryText.innerHTML = zone.memoryLines.map(line => `<li>${line}</li>`).join("");
-  els.trimText.innerHTML = zone.trimLines.map(line => `<li>${line}</li>`).join("");
+  els.memoryText.textContent = zone.memory;
+  els.trimText.textContent = zone.futureTrim;
 }
 
 function updateActiveSectors(zone, side) {
