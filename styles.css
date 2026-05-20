@@ -1822,3 +1822,139 @@ body,
     font-size: .50rem !important;
   }
 }
+
+
+/* v0.6.18: final phone card formatting pass */
+@media (min-width: 761px) {
+  .micro-list strong {
+    display: inline-block;
+    margin-right: .38rem;
+  }
+
+  .micro-list span {
+    display: inline;
+  }
+
+  .micro-list li.full-line span {
+    display: block;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Facts: +10% bigger on phone */
+  .info-card.facts h2 {
+    font-size: .638rem !important;
+  }
+
+  .info-card.facts dt {
+    font-size: .484rem !important;
+  }
+
+  .info-card.facts dd {
+    font-size: .55rem !important;
+  }
+
+  /* Memory Bridge / Sail Trim line behaviour */
+  .info-card:nth-child(2) .micro-list li,
+  .info-card:nth-child(3) .micro-list li {
+    display: grid !important;
+    grid-template-columns: 42px 1fr !important;
+    gap: .18rem !important;
+    align-items: start !important;
+    margin: 0 0 .08rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list li.full-line,
+  .info-card:nth-child(3) .micro-list li.full-line {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  .info-card:nth-child(2) .micro-list li.full-line span,
+  .info-card:nth-child(3) .micro-list li.full-line span {
+    display: block !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+  }
+
+  .info-card:nth-child(2) .micro-list strong,
+  .info-card:nth-child(3) .micro-list strong {
+    display: block !important;
+    color: var(--muted) !important;
+    font-size: .44rem !important;
+    font-weight: 900 !important;
+    letter-spacing: .04em !important;
+    text-transform: uppercase !important;
+    line-height: 1.04 !important;
+  }
+
+  .info-card:nth-child(2) .micro-list span,
+  .info-card:nth-child(3) .micro-list span {
+    display: block !important;
+    color: var(--marine) !important;
+    font-size: .51rem !important;
+    font-weight: 900 !important;
+    line-height: 1.08 !important;
+  }
+
+  /* Sail Trim: fixed 7-row logic on phone: title + 3 items of 2 rows */
+  .info-card:nth-child(3) {
+    min-height: 126px !important;
+  }
+
+  .info-card:nth-child(3) .micro-list {
+    display: grid !important;
+    grid-template-rows: repeat(3, 2.1em) !important;
+    row-gap: .05rem !important;
+  }
+
+  .info-card:nth-child(3) .micro-list li {
+    min-height: 2.1em !important;
+    margin-bottom: 0 !important;
+  }
+
+  .info-card:nth-child(3) .micro-list strong,
+  .info-card:nth-child(3) .micro-list span {
+    line-height: 1.05 !important;
+  }
+
+  /* Memory Bridge: keep first two label/value rows, last sentence full-width */
+  .info-card:nth-child(2) {
+    min-height: 92px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .info-card.facts h2 {
+    font-size: .594rem !important;
+  }
+
+  .info-card.facts dt {
+    font-size: .44rem !important;
+  }
+
+  .info-card.facts dd {
+    font-size: .506rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list li,
+  .info-card:nth-child(3) .micro-list li {
+    grid-template-columns: 38px 1fr !important;
+    gap: .14rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list strong,
+  .info-card:nth-child(3) .micro-list strong {
+    font-size: .40rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list span,
+  .info-card:nth-child(3) .micro-list span {
+    font-size: .47rem !important;
+  }
+
+  .info-card:nth-child(3) {
+    min-height: 118px !important;
+  }
+}
