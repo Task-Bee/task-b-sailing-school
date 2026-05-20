@@ -57,11 +57,11 @@
 
     <main class="content">
       <section class="intro" id="home">
-        <p class="eyebrow">Subject: Sailing</p>
-        <h1>Points of Sail</h1>
-        <p class="lead">
-          Boat-first test: active wind sectors stay locked, while the yacht and sails rotate together around the centre.
-        </p>
+        <div class="subject-title">
+          <span class="subject-name">SAILING</span>
+          <span class="subject-separator">&gt;</span>
+          <span class="subject-current">Points of Sail</span>
+        </div>
       </section>
 
       <section class="tool-card" id="tool" aria-label="Points of Sail boat model">
@@ -100,16 +100,16 @@
               <text class="wind-label" x="0" y="72" text-anchor="middle">WIND</text>
             </g>
 
-            <g id="sectorLayer" transform="translate(500,420)"></g>
+            <g id="sectorLayer" transform="translate(500,405)"></g>
 
-            <g class="compass" transform="translate(500,420)">
-              <circle r="260" fill="url(#compassFill)" filter="url(#softShadow)"/>
-              <circle r="260" fill="none" stroke="rgba(10,37,64,.22)" stroke-width="5"/>
-              <circle r="132" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.62)" stroke-width="4"/>
+            <g class="compass" transform="translate(500,405)">
+              <circle r="365" fill="url(#compassFill)" filter="url(#softShadow)"/>
+              <circle r="365" fill="none" stroke="rgba(10,37,64,.22)" stroke-width="5"/>
+              <circle r="185" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.62)" stroke-width="4"/>
               <g id="ticks"></g>
             </g>
 
-            <g id="boatGroup" class="boat-group" transform="translate(500 420) rotate(38)">
+            <g id="boatGroup" class="boat-group" transform="translate(500 405) rotate(38) scale(1.28)">
               <path class="direction-arrow" d="M0 -216 L11 -190 L3.5 -193 L3.5 -166 L-3.5 -166 L-3.5 -193 L-11 -190 Z"/>
 
               <g class="hull-layer">
@@ -145,7 +145,7 @@
             </g>
 
             <g class="center-caption">
-              <text id="svgPointName" x="500" y="702" text-anchor="middle">Close-hauled</text>
+              <text id="svgPointName" x="500" y="720" text-anchor="middle">Close-hauled</text>
             </g>
           </svg>
         </div>

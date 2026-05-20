@@ -79,8 +79,8 @@ const ZONES = [
   }
 ];
 
-const CENTER = { x: 500, y: 420 };
-const SECTOR_RADIUS = 302;
+const CENTER = { x: 500, y: 405 };
+const SECTOR_RADIUS = 420;
 let continuousHeading = 38;
 let dragging = false;
 
@@ -185,7 +185,7 @@ function update(value) {
   const side = getSide(signed, relative);
   const zone = getZone(relative);
 
-  els.boatGroup.setAttribute("transform", `translate(500 420) rotate(${visualHeading})`);
+  els.boatGroup.setAttribute("transform", `translate(500 405) rotate(${visualHeading}) scale(1.28)`);
 
   updateSails(zone, signed, relative);
   updateText(zone, relative, signed);
@@ -323,8 +323,8 @@ function drawTicks() {
   const ticks = document.querySelector("#ticks");
   for (let angle = -180; angle <= 180; angle += 10) {
     const major = angle % 30 === 0;
-    const inner = major ? 228 : 240;
-    const outer = 258;
+    const inner = major ? 320 : 340;
+    const outer = 360;
     const p1 = polar(angle, inner);
     const p2 = polar(angle, outer);
 

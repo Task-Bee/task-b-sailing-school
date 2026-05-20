@@ -133,6 +133,32 @@ h1, h2 {
 h1 { font-size: clamp(2.3rem, 7vw, 4.6rem); }
 h2 { font-size: 1.18rem; }
 
+.subject-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin: .1rem 0 .85rem;
+  font-weight: 950;
+  letter-spacing: -.02em;
+}
+
+.subject-name {
+  color: var(--sunset);
+  font-size: clamp(1.05rem, 3.8vw, 1.45rem);
+  letter-spacing: .08em;
+}
+
+.subject-separator {
+  color: rgba(10,37,64,.38);
+  font-size: clamp(1rem, 3vw, 1.3rem);
+}
+
+.subject-current {
+  color: var(--marine);
+  font-size: clamp(1.22rem, 4.5vw, 1.9rem);
+}
+
 .lead {
   max-width: 760px;
   margin: 0;
@@ -142,6 +168,7 @@ h2 { font-size: 1.18rem; }
 }
 
 .tool-card {
+  position: relative;
   max-width: 1180px;
   margin: 0 auto;
   border: var(--border);
@@ -182,8 +209,8 @@ h2 { font-size: 1.18rem; }
 .point-button.feedback { background: var(--sea); color: white; }
 
 .simulator {
-  height: min(72vh, 760px);
-  min-height: 480px;
+  height: min(76vh, 820px);
+  min-height: 560px;
   background:
     radial-gradient(circle at center, rgba(0,119,182,.14), transparent 22rem),
     #E6F3F8;
@@ -278,19 +305,25 @@ svg {
 }
 
 .info-grid {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 8;
   display: grid;
   grid-template-columns: .9fr 1fr 1fr;
   gap: .8rem;
-  padding: .9rem;
-  background: #fff;
+  pointer-events: none;
 }
 
 .info-card {
   padding: 1rem;
   border: var(--border);
-  border-radius: 22px;
-  background: rgba(255,255,255,.9);
+  border-radius: 28px;
+  background: rgba(255,255,255,.78);
   box-shadow: var(--small-shadow);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
 }
 .info-card p {
   margin: 0;
@@ -421,12 +454,36 @@ svg {
 
   .tool-card { border-radius: 24px; }
 
-  .simulator {
-    height: 54vh;
-    min-height: 360px;
+  .control-bar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .42rem;
+    overflow-x: visible;
+    padding: .55rem;
   }
 
-  .info-grid { grid-template-columns: 1fr; }
+  .point-button {
+    min-height: 36px;
+    padding: 0 .55rem;
+    font-size: .74rem;
+    white-space: nowrap;
+  }
+
+  .point-button.feedback {
+    grid-column: span 3;
+  }
+
+  .simulator {
+    height: 62vh;
+    min-height: 430px;
+  }
+
+  .info-grid {
+    position: static;
+    grid-template-columns: 1fr;
+    padding: .75rem;
+    background: #fff;
+  }
 
   .toast {
     left: .75rem;
@@ -437,13 +494,13 @@ svg {
 
 @media (max-width: 420px) {
   .point-button {
-    min-height: 40px;
-    padding-inline: 12px;
-    font-size: .86rem;
+    min-height: 34px;
+    padding-inline: 8px;
+    font-size: .68rem;
   }
   .simulator {
-    height: 50vh;
-    min-height: 330px;
+    height: 60vh;
+    min-height: 400px;
   }
   #svgPointName { font-size: 28px; }
 }
