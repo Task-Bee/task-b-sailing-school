@@ -1380,3 +1380,31 @@ body,
     border-right: 0;
   }
 }
+
+
+/* v0.6.11: phone info-box font-size tweak only */
+@media (max-width: 760px) {
+  .info-card h2 {
+    font-size: .58rem;
+    line-height: 1.02;
+  }
+
+  .info-card p,
+  .info-card dd,
+  .info-card dt {
+    font-size: .43rem;
+    line-height: 1.12;
+  }
+}
+
+@media (max-width: 420px) {
+  .info-card h2 {
+    font-size: .54rem;
+  }
+
+  .info-card p,
+  .info-card dd,
+  .info-card dt {
+    font-size: .405rem;
+  }
+}
