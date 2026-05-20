@@ -189,7 +189,7 @@ function update(value) {
 
   updateSails(zone, signed, relative);
   updateText(zone, relative, signed);
-  updateActiveSectors(zone, side, relative);
+  updateActiveSectors(zone, side);
   updateButtons(zone);
 }
 
@@ -199,8 +199,6 @@ function getSide(signed, relative) {
 }
 
 function updateSails(zone, signed, relative) {
-  // Corrected: sails extend aft/downwind relative to the boat, not forward.
-  // Positive heading gives sails to local starboard/right; negative heading local port/left.
   let side = signed >= 0 ? 1 : -1;
   if (relative < 2) side = 1;
 
@@ -261,10 +259,11 @@ function updateText(zone, relative, signed) {
   els.trimText.textContent = zone.futureTrim;
 }
 
-function updateActiveSectors(zone, side, relative) {
+function updateActiveSectors(zone, side) {
   document.querySelectorAll(".sector").forEach(sector => {
     const sameZone = sector.dataset.zone === zone.key;
-    const sameSide = sector.dataset.side === side || side === "center" || sector.dataset.side === "center";
+    const zoneLightsBothSides = zone.key === "noGo" || zone.key === "deadRun";
+    const sameSide = zoneLightsBothSides || sector.dataset.side === side || side === "center";
     sector.classList.toggle("active", sameZone && sameSide);
   });
 }

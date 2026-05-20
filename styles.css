@@ -244,18 +244,19 @@ svg {
   stroke-width: 5;
   stroke-linejoin: round;
 }
-.cockpit {
-  fill: rgba(222,234,241,.72);
-  stroke: rgba(10,37,64,.34);
+.cockpit-outline,
+.coachroof {
+  fill: rgba(222,234,241,.62);
+  stroke: rgba(10,37,64,.30);
   stroke-width: 2;
 }
+.stern-line,
 .deck-line {
   fill: none;
-  stroke: rgba(10,37,64,.26);
+  stroke: rgba(10,37,64,.28);
   stroke-width: 2.5;
   stroke-linecap: round;
 }
-.deck-line.soft { stroke-width: 2; opacity: .6; }
 
 .main-sail {
   fill: rgba(255,107,53,.58);
