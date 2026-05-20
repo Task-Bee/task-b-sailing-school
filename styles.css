@@ -1408,3 +1408,40 @@ body,
     font-size: .405rem;
   }
 }
+
+
+/* v0.6.12: stronger phone info-box typography */
+@media (max-width: 760px) {
+  .info-card h2 {
+    font-size: .68rem;
+    line-height: 1.04;
+    margin-bottom: .14rem;
+  }
+
+  .info-card p,
+  .info-card dd,
+  .info-card dt {
+    font-size: .50rem;
+    line-height: 1.14;
+  }
+
+  .info-card.facts dl div {
+    grid-template-columns: 36px 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .info-card h2 {
+    font-size: .62rem;
+  }
+
+  .info-card p,
+  .info-card dd,
+  .info-card dt {
+    font-size: .46rem;
+  }
+
+  .info-card.facts dl div {
+    grid-template-columns: 32px 1fr;
+  }
+}
