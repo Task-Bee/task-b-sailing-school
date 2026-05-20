@@ -258,18 +258,11 @@ svg {
   stroke-linecap: round;
 }
 
-.main-sail {
-  fill: rgba(255,107,53,.58);
-  stroke: var(--marine);
-  stroke-width: 3;
-  stroke-linejoin: round;
-}
+.main-sail,
 .genoa-sail {
-  fill: rgba(0,119,182,.50);
-  stroke: var(--marine);
-  stroke-width: 3;
-  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
+
 .mast-line {
   stroke: var(--marine);
   stroke-width: 6;
