@@ -303,8 +303,8 @@ function updateText(zone, relative, signed) {
     els.factTack.textContent = signed >= 0 ? "Port tack" : "Starboard tack";
   }
 
-  els.memoryText.innerHTML = zone.memoryLines.map(line => `<li>${line}</li>`).join("");
-  els.trimText.innerHTML = zone.trimLines.map(line => `<li>${line}</li>`).join("");
+  els.memoryText.innerHTML = zone.memoryLines.map(line => `<li>${formatContentLine(line)}</li>`).join("");
+  els.trimText.innerHTML = zone.trimLines.map(line => `<li>${formatContentLine(line)}</li>`).join("");
 }
 
 function updateActiveSectors(zone, side) {
@@ -407,6 +407,11 @@ function normalize360(value) {
 function normalizeSigned(value) {
   const normal = normalize360(value);
   return normal > 180 ? normal - 360 : normal;
+}
+
+function formatContentLine(line) {
+  if (!line.includes("</strong>")) return `<span>${line}</span>`;
+  return line.replace("</strong> ", "</strong><span>") + "</span>";
 }
 
 function showToast(message) {
