@@ -1733,3 +1733,92 @@ body,
     font-size: .40rem !important;
   }
 }
+
+
+/* v0.6.17: phone readability correction for Memory Bridge + Sail Trim only */
+@media (max-width: 760px) {
+  .info-card:nth-child(2),
+  .info-card:nth-child(3) {
+    padding: .34rem .40rem !important;
+    border-radius: 15px !important;
+    background: rgba(255,255,255,.82) !important;
+  }
+
+  .info-card:nth-child(2) {
+    width: 40% !important;
+    max-width: 170px !important;
+    min-height: 82px !important;
+  }
+
+  .info-card:nth-child(3) {
+    width: 40% !important;
+    max-width: 170px !important;
+    min-height: 92px !important;
+  }
+
+  .info-card:nth-child(2) h2,
+  .info-card:nth-child(3) h2 {
+    font-size: .62rem !important;
+    line-height: 1.02 !important;
+    margin-bottom: .14rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list li,
+  .info-card:nth-child(3) .micro-list li {
+    display: grid !important;
+    grid-template-columns: 43px 1fr !important;
+    gap: .18rem !important;
+    align-items: baseline !important;
+    margin: 0 0 .10rem !important;
+    line-height: 1.08 !important;
+  }
+
+  .info-card:nth-child(2) .micro-list strong,
+  .info-card:nth-child(3) .micro-list strong {
+    display: block !important;
+    color: var(--muted) !important;
+    font-size: .46rem !important;
+    font-weight: 900 !important;
+    letter-spacing: .04em !important;
+    text-transform: uppercase !important;
+    line-height: 1.06 !important;
+  }
+
+  .info-card:nth-child(2) .micro-list span,
+  .info-card:nth-child(3) .micro-list span {
+    display: block !important;
+    color: var(--marine) !important;
+    font-size: .54rem !important;
+    font-weight: 900 !important;
+    line-height: 1.10 !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .info-card:nth-child(2),
+  .info-card:nth-child(3) {
+    width: 40% !important;
+    max-width: 160px !important;
+  }
+
+  .info-card:nth-child(2) h2,
+  .info-card:nth-child(3) h2 {
+    font-size: .58rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list li,
+  .info-card:nth-child(3) .micro-list li {
+    grid-template-columns: 39px 1fr !important;
+    gap: .15rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list strong,
+  .info-card:nth-child(3) .micro-list strong {
+    font-size: .42rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list span,
+  .info-card:nth-child(3) .micro-list span {
+    font-size: .50rem !important;
+  }
+}
