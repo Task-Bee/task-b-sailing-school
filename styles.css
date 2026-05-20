@@ -1958,3 +1958,60 @@ body,
     min-height: 118px !important;
   }
 }
+
+
+/* v0.6.19: content corrections + lower phone info-card height */
+@media (max-width: 760px) {
+  .info-card:nth-child(2),
+  .info-card:nth-child(3) {
+    padding-top: .20rem !important;
+    padding-bottom: .20rem !important;
+  }
+
+  .info-card:nth-child(2) {
+    min-height: 74px !important;
+  }
+
+  .info-card:nth-child(3) {
+    min-height: 104px !important;
+  }
+
+  .info-card:nth-child(2) .micro-list {
+    row-gap: .02rem !important;
+  }
+
+  .info-card:nth-child(3) .micro-list {
+    grid-template-rows: repeat(3, 1.72em) !important;
+    row-gap: .02rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list li,
+  .info-card:nth-child(3) .micro-list li {
+    margin-bottom: .02rem !important;
+    min-height: 0 !important;
+  }
+
+  .info-card:nth-child(2) .micro-list strong,
+  .info-card:nth-child(3) .micro-list strong {
+    line-height: 1.00 !important;
+  }
+
+  .info-card:nth-child(2) .micro-list span,
+  .info-card:nth-child(3) .micro-list span {
+    line-height: 1.03 !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .info-card:nth-child(2) {
+    min-height: 68px !important;
+  }
+
+  .info-card:nth-child(3) {
+    min-height: 96px !important;
+  }
+
+  .info-card:nth-child(3) .micro-list {
+    grid-template-rows: repeat(3, 1.62em) !important;
+  }
+}

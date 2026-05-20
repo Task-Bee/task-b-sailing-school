@@ -78,7 +78,7 @@ const ZONES = [
     trimLines: [
       "<strong>Main</strong> tip of boom just outside hull",
       "<strong>Genoa</strong> trimmed on telltales",
-      "<strong>Balance</strong> often easiest to feel here"
+      "<strong>Balance</strong> boat feels steady and powered"
     ],
     main: 44,
     genoa: 42
@@ -99,7 +99,7 @@ const ZONES = [
     trimLines: [
       "<strong>Main</strong> ease until spreader crease",
       "<strong>Genoa</strong> loose, not past imaginary bow line",
-      "<strong>Watch</strong> for parachute effect"
+      "<strong>Watch</strong> for genoa falling dead"
     ],
     main: 70,
     genoa: 62
