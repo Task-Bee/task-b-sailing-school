@@ -1445,3 +1445,141 @@ body,
     grid-template-columns: 32px 1fr;
   }
 }
+
+
+/* v0.6.13: content visualisation */
+.micro-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.micro-list li {
+  position: relative;
+  margin: 0 0 .18rem;
+  padding-left: .72rem;
+  color: #34495a;
+  line-height: 1.16;
+}
+
+.micro-list li::before {
+  content: "➜";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--sunset);
+  font-weight: 950;
+}
+
+.micro-list strong {
+  color: var(--marine);
+  font-weight: 950;
+}
+
+@media (max-width: 760px) {
+  .micro-list li {
+    margin-bottom: .10rem;
+    padding-left: .48rem;
+    line-height: 1.10;
+  }
+
+  .micro-list li::before {
+    font-size: .42rem;
+  }
+}
+
+@media (min-width: 761px) {
+  .micro-list li {
+    min-height: 1.05em;
+  }
+}
+
+
+/* v0.6.14: content display fix */
+.micro-list {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.micro-list li {
+  margin: 0 0 .20rem !important;
+  padding-left: 0 !important;
+  color: #34495a;
+  line-height: 1.16;
+}
+
+.micro-list li::before {
+  content: none !important;
+  display: none !important;
+}
+
+.micro-list strong {
+  color: var(--marine);
+  font-weight: 950;
+}
+
+@media (min-width: 761px) {
+  .info-card:nth-child(2) p,
+  .info-card:nth-child(3) p {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .micro-list li {
+    min-height: 0 !important;
+    font-size: .92rem;
+    line-height: 1.18;
+  }
+}
+
+@media (max-width: 760px) {
+  .info-card h2 {
+    font-size: .56rem !important;
+    line-height: 1.02 !important;
+    margin-bottom: .10rem !important;
+  }
+
+  .info-card p,
+  .info-card dd,
+  .info-card dt,
+  .micro-list li {
+    font-size: .40rem !important;
+    line-height: 1.10 !important;
+  }
+
+  .micro-list li {
+    margin-bottom: .08rem !important;
+    padding-left: 0 !important;
+  }
+
+  .micro-list strong {
+    font-weight: 900;
+  }
+
+  .info-card:nth-child(2) p,
+  .info-card:nth-child(3) p {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    display: block !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .info-card h2 {
+    font-size: .52rem !important;
+  }
+
+  .info-card p,
+  .info-card dd,
+  .info-card dt,
+  .micro-list li {
+    font-size: .37rem !important;
+    line-height: 1.08 !important;
+  }
+}
