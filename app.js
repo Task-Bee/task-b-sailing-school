@@ -79,7 +79,7 @@ const ZONES = [
   }
 ];
 
-const CENTER = { x: 500, y: 470 };
+const CENTER = { x: 500, y: 505 };
 const SECTOR_RADIUS = 390;
 let continuousHeading = 38;
 let dragging = false;
@@ -185,7 +185,7 @@ function update(value) {
   const side = getSide(signed, relative);
   const zone = getZone(relative);
 
-  els.boatGroup.setAttribute("transform", `translate(500 470) rotate(${visualHeading}) scale(1.25)`);
+  els.boatGroup.setAttribute("transform", `translate(500 505) rotate(${visualHeading}) scale(1.20)`);
 
   updateSails(zone, signed, relative);
   updateText(zone, relative, signed);
