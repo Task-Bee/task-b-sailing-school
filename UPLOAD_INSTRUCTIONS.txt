@@ -1,0 +1,23 @@
+UPLOAD INSTRUCTIONS — Task-B Instructional Tool v0.4 arrow-first
+
+Upload these 3 files to the ROOT of your GitHub repository:
+
+- index.html
+- styles.css
+- app.js
+
+Replace the existing files with the same names.
+
+This version intentionally uses no subfolders and no JSON files.
+Old files may remain in the repository for now.
+
+After upload:
+1. Commit changes.
+2. Wait 1–2 minutes.
+3. Open https://task-bee.github.io/task-b-sailing-school/
+4. Hard refresh with Ctrl + Shift + R
+
+Sprint goal:
+- Test the arrow-first Points of Sail model.
+- Confirm angle zones and active sector colours.
+- Do not judge boat/sail trim yet; boat comes after arrow logic is accepted.
