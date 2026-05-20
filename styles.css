@@ -1583,3 +1583,95 @@ body,
     line-height: 1.08 !important;
   }
 }
+
+
+/* v0.6.15: card content layout correction */
+@media (min-width: 761px) {
+  .info-card:nth-child(2),
+  .info-card:nth-child(3) {
+    width: 360px !important;
+    max-width: 360px !important;
+    min-height: 116px !important;
+    height: 116px !important;
+    padding: .78rem .95rem !important;
+  }
+
+  .info-card:nth-child(2) {
+    right: 1rem !important;
+    left: auto !important;
+    top: auto !important;
+    bottom: 1rem !important;
+    transform: none !important;
+  }
+
+  .info-card:nth-child(3) {
+    left: 1rem !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 1rem !important;
+    transform: none !important;
+  }
+
+  .info-card:nth-child(2) h2,
+  .info-card:nth-child(3) h2 {
+    font-size: 1rem !important;
+    line-height: 1.05 !important;
+    margin-bottom: .36rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list li,
+  .info-card:nth-child(3) .micro-list li {
+    font-size: .88rem !important;
+    line-height: 1.16 !important;
+    margin: 0 0 .08rem !important;
+    white-space: nowrap !important;
+  }
+
+  .info-card:nth-child(2) .micro-list,
+  .info-card:nth-child(3) .micro-list {
+    display: grid !important;
+    grid-template-rows: repeat(3, 1.05em);
+  }
+}
+
+@media (max-width: 760px) {
+  .info-card:nth-child(2) h2,
+  .info-card:nth-child(3) h2 {
+    font-size: .46rem !important;
+    line-height: 1 !important;
+    margin-bottom: .08rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list li,
+  .info-card:nth-child(3) .micro-list li {
+    font-size: .31rem !important;
+    line-height: 1.04 !important;
+    margin-bottom: .04rem !important;
+  }
+
+  .info-card:nth-child(2),
+  .info-card:nth-child(3) {
+    padding: .22rem .26rem !important;
+  }
+
+  .info-card:nth-child(2) {
+    min-height: 46px !important;
+  }
+
+  .info-card:nth-child(3) {
+    min-height: 52px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .info-card:nth-child(2) h2,
+  .info-card:nth-child(3) h2 {
+    font-size: .43rem !important;
+  }
+
+  .info-card:nth-child(2) .micro-list li,
+  .info-card:nth-child(3) .micro-list li {
+    font-size: .29rem !important;
+    line-height: 1.03 !important;
+  }
+}
