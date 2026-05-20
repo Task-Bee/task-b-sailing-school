@@ -28,10 +28,10 @@ const ZONES = [
   {
     key: "closeReach",
     label: "Close reach",
-    angle: "45–70°",
+    angle: "45°",
     min: 45,
     max: 70,
-    target: 58,
+    target: 45,
     color: "#F2C94C",
     memory: "Wind still forward, but less aggressive. Think forward shoulder rather than nose.",
     futureTrim: "Main stays in the middle. Genoa is trimmed by telltales.",
@@ -41,7 +41,7 @@ const ZONES = [
   {
     key: "beamReach",
     label: "Beam reach",
-    angle: "70–110°",
+    angle: "90°",
     min: 70,
     max: 110,
     target: 90,
@@ -54,10 +54,10 @@ const ZONES = [
   {
     key: "broadReach",
     label: "Broad reach",
-    angle: "110–150°",
+    angle: "150°",
     min: 110,
     max: 150,
-    target: 130,
+    target: 150,
     color: "#2F80ED",
     memory: "Wind from behind your ear. Comfortable, but the boom becomes more important.",
     futureTrim: "Ease mainsail until the spreader creates a horizontal crease. Genoa loose, but not overtaking the imaginary line in front of the boat.",
@@ -277,7 +277,12 @@ function updateButtons(zone) {
 }
 
 function getZone(relative) {
-  return ZONES.find(zone => relative >= zone.min && relative <= zone.max) || ZONES[ZONES.length - 1];
+  if (relative < 30) return ZONES.find(zone => zone.key === "noGo");
+  if (relative < 45) return ZONES.find(zone => zone.key === "closeHauled");
+  if (relative < 70) return ZONES.find(zone => zone.key === "closeReach");
+  if (relative < 110) return ZONES.find(zone => zone.key === "beamReach");
+  if (relative <= 150) return ZONES.find(zone => zone.key === "broadReach");
+  return ZONES.find(zone => zone.key === "deadRun");
 }
 
 function drawSectors() {

@@ -540,26 +540,26 @@ svg {
 
 .info-card.facts {
   left: .8rem;
-  top: 36%;
+  top: 31%;
   transform: translateY(-50%);
-  width: min(28%, 285px);
-  min-height: 156px;
+  width: min(26%, 260px);
+  min-height: 146px;
 }
 
 .info-card:nth-child(2) {
-  right: .8rem;
-  top: 24%;
+  left: .8rem;
+  top: 63%;
   transform: translateY(-50%);
-  width: min(27%, 275px);
-  min-height: 150px;
+  width: min(26%, 260px);
+  min-height: 132px;
 }
 
 .info-card:nth-child(3) {
   right: .8rem;
-  top: 76%;
+  top: 62%;
   transform: translateY(-50%);
-  width: min(30%, 310px);
-  min-height: 178px;
+  width: min(29%, 300px);
+  min-height: 168px;
 }
 
 .menu-version {
@@ -582,4 +582,31 @@ svg {
 
 .info-card:nth-child(3) p {
   min-height: 5.2em;
+}
+
+@media (max-width: 420px) {
+  .info-card {
+    width: 26%;
+    max-width: 104px;
+    padding: .26rem .28rem;
+  }
+
+  .info-card h2 {
+    font-size: .52rem;
+  }
+
+  .info-card p,
+  .info-card dd,
+  .info-card dt {
+    font-size: .42rem;
+  }
+
+  .info-card dl div {
+    grid-template-columns: 27px 1fr;
+  }
+
+  .info-card:nth-child(3) {
+    width: 29%;
+    max-width: 116px;
+  }
 }
