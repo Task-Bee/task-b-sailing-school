@@ -313,7 +313,7 @@ svg {
 
 .info-card {
   position: absolute;
-  width: min(24%, 250px);
+  width: min(26%, 270px);
   padding: .72rem .78rem;
   border: var(--border);
   border-radius: 28px;
@@ -499,9 +499,9 @@ svg {
     font-size: .68rem;
   }
   .simulator {
-    height: calc(100svh - 245px);
-    min-height: 470px;
-    max-height: 590px;
+    height: calc(100svh - 218px);
+    min-height: 500px;
+    max-height: 630px;
   }
   #svgPointName { font-size: 28px; }
 }
@@ -540,20 +540,26 @@ svg {
 
 .info-card.facts {
   left: .8rem;
-  top: 50%;
+  top: 36%;
   transform: translateY(-50%);
+  width: min(28%, 285px);
+  min-height: 156px;
 }
 
 .info-card:nth-child(2) {
   right: .8rem;
-  top: 30%;
+  top: 24%;
   transform: translateY(-50%);
+  width: min(27%, 275px);
+  min-height: 150px;
 }
 
 .info-card:nth-child(3) {
   right: .8rem;
-  top: 70%;
+  top: 76%;
   transform: translateY(-50%);
+  width: min(30%, 310px);
+  min-height: 178px;
 }
 
 .menu-version {
@@ -564,4 +570,16 @@ svg {
   color: var(--muted);
   font-size: .8rem;
   font-weight: 850;
+}
+
+.info-card h2 {
+  white-space: nowrap;
+}
+
+.info-card p {
+  min-height: 3.9em;
+}
+
+.info-card:nth-child(3) p {
+  min-height: 5.2em;
 }
